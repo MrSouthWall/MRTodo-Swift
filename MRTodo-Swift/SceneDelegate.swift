@@ -16,7 +16,42 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        
+        /* 关于 Scene
+         在 iOS 13 以上的版本中，系统支持多窗口，每个 UIWindowScene 实例就是一个窗口。
+         而 UIWindow 才是真正放内容的地方，所以下文 TabBar 最后被添加到 UIWindow 的根视图中。
+         +----------------------+
+         | UIApplication        |
+         |   +----------------+ |
+         |   | UIWindowScene  | |
+         |   |   +----------+ | |
+         |   |   | UIWindow | | |
+         |   |   +----------+ | |
+         |   +----------------+ |
+         +----------------------+
+         */
+        
+        // 创建一个 UIWindow 放在 UIWindowScene 中
+        window = UIWindow(windowScene: windowScene)
+        
+        // 创建 TabBar
+        let tabBarController = UITabBarController()
+        // 分别创建四个视图。
+        let calendarViewController = CalendarViewController()
+        let todoViewController = TodoViewController()
+        let tomatoClockViewController = TomatoClockViewController()
+        let statistViewController = StatistViewController()
+        // 给四个视图设置 TabBarItem 样式。
+        calendarViewController.tabBarItem = UITabBarItem(title: "日历日程", image: UIImage(systemName: "calendar"), tag: 0)
+        todoViewController.tabBarItem = UITabBarItem(title: "待办事项", image: UIImage(systemName: "text.badge.checkmark"), tag: 1)
+        tomatoClockViewController.tabBarItem = UITabBarItem(title: "番茄计时", image: UIImage(systemName: "timer"), tag: 2)
+        statistViewController.tabBarItem = UITabBarItem(title: "统计趋势", image: UIImage(systemName: "chart.xyaxis.line"), tag: 3)
+        // 把四个视图添加到 TabBar，按序添加。
+        tabBarController.viewControllers = [calendarViewController, todoViewController, tomatoClockViewController, statistViewController]
+        // 把 Window 的根视图设置为 TabBar。
+        window?.rootViewController = tabBarController
+        window?.makeKeyAndVisible() // 设置为关键窗口，确保窗口出现在屏幕上，并且用户可以与其交互。
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
