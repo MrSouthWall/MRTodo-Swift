@@ -34,24 +34,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // 创建一个 UIWindow 放在 UIWindowScene 中
         window = UIWindow(windowScene: windowScene)
+
+        // 检查用户是否首次启动
+        let isFirstLaunch = !UserDefaults.standard.bool(forKey: "isShowStartView")
+        // 如果是首次启动则打开欢迎页
+        if isFirstLaunch {
+            let startViewController = StartViewController()
+            window?.rootViewController = startViewController
+        } else {
+            // 把 Window 的根视图设置为 TabBar
+            window?.rootViewController = tabBarConfigure()
+        }
         
-        // 创建 TabBar
-        let tabBarController = UITabBarController()
-        // 分别创建四个视图。
-        let calendarViewController = CalendarViewController()
-        let todoViewController = TodoViewController()
-        let tomatoClockViewController = TomatoClockViewController()
-        let statistViewController = StatistViewController()
-        // 给四个视图设置 TabBarItem 样式。
-        calendarViewController.tabBarItem = UITabBarItem(title: "日历日程", image: UIImage(systemName: "calendar"), tag: 0)
-        todoViewController.tabBarItem = UITabBarItem(title: "待办事项", image: UIImage(systemName: "text.badge.checkmark"), tag: 1)
-        tomatoClockViewController.tabBarItem = UITabBarItem(title: "番茄计时", image: UIImage(systemName: "timer"), tag: 2)
-        statistViewController.tabBarItem = UITabBarItem(title: "统计趋势", image: UIImage(systemName: "chart.xyaxis.line"), tag: 3)
-        // 把四个视图添加到 TabBar，按序添加。
-        tabBarController.viewControllers = [calendarViewController, todoViewController, tomatoClockViewController, statistViewController]
-        // 把 Window 的根视图设置为 TabBar。
-        window?.rootViewController = tabBarController
-        window?.makeKeyAndVisible() // 设置为关键窗口，确保窗口出现在屏幕上，并且用户可以与其交互。
+        window?.makeKeyAndVisible() // 设置为关键窗口，确保窗口出现在屏幕上，并且用户可以与其交互
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -85,6 +80,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
     }
 
-
+    // MARK: - TabBarConfigure
+    
+    /// 配置 TabBar 标签栏视图
+    func tabBarConfigure() -> UITabBarController {
+        // 创建 TabBar
+        let tabBarController = UITabBarController()
+        // 分别创建四个视图。
+        let calendarViewController = CalendarViewController()
+        let todoViewController = TodoViewController()
+        let tomatoClockViewController = TomatoClockViewController()
+        let statistViewController = StatistViewController()
+        // 给四个视图设置 TabBarItem 样式
+        calendarViewController.tabBarItem = UITabBarItem(title: "日历日程", image: UIImage(systemName: "calendar"), tag: 0)
+        todoViewController.tabBarItem = UITabBarItem(title: "待办事项", image: UIImage(systemName: "text.badge.checkmark"), tag: 1)
+        tomatoClockViewController.tabBarItem = UITabBarItem(title: "番茄计时", image: UIImage(systemName: "timer"), tag: 2)
+        statistViewController.tabBarItem = UITabBarItem(title: "统计趋势", image: UIImage(systemName: "chart.xyaxis.line"), tag: 3)
+        // 把四个视图添加到 TabBar，按序添加
+        tabBarController.viewControllers = [calendarViewController, todoViewController, tomatoClockViewController, statistViewController]
+        return tabBarController
+    }
 }
 
