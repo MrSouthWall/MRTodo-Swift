@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "MRTodo App Logo V1 - Light.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -12,6 +13,7 @@
           "value" : "dark"
         }
       ],
+      "filename" : "MRTodo App Logo V1 - Dark.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -23,6 +25,7 @@
           "value" : "tinted"
         }
       ],
+      "filename" : "MRTodo App Logo V1 - Tinted.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
