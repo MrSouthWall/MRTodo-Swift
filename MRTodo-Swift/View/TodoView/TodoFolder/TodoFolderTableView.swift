@@ -9,9 +9,11 @@ import UIKit
 
 class TodoFolderTableView: UITableView {
     
+    /// 初始化
     override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
         
+        // 设置视图
         setupTableView()
         setupTableHeaderView()
     }

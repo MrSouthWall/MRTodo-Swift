@@ -9,9 +9,11 @@ import UIKit
 
 class TodoFolderHeaderCollectionView: UICollectionView {
     
+    /// 初始化
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
         
+        // 设置视图
         setupCollectionView()
     }
     
