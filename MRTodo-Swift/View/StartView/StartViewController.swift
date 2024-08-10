@@ -27,6 +27,21 @@ class StartViewController: UIViewController {
         setupContentViews()
         setupPageControl()
         setupButton()
+        
+        /* 当用户修改深色模式设置时，重新加载内容视图，此方法适用于 iOS 17.0 及以上版本。
+         1、注册观察者：
+            当 viewDidLoad() 被调用时，执行到 registerForTraitChanges(_:handler:) 时，系统注册了一个 trait 变化的观察者和对应的处理闭包。
+            此时，系统保存了这个观察者的相关信息。
+         2、trait 变化：
+            当系统检测到 trait（如用户界面风格）发生变化时，它会生成一个通知，这是异步的。
+            系统会查找所有已注册的观察者，这个通知通常会被放置到一个异步队列中，并安排在主线程上执行注册的闭包。
+         3、处理闭包的执行：
+            iOS 系统会在主线程上执行处理闭包。这样做是为了确保所有 UI 更新都在主线程上进行，避免线程安全问题。
+         */
+        registerForTraitChanges([UITraitUserInterfaceStyle.self], handler: { (self: Self, previousTraitCollection: UITraitCollection) in
+            // 重新调用，以响应深色模式的变化
+            self.setupContentViews()
+        })
     }
     
     

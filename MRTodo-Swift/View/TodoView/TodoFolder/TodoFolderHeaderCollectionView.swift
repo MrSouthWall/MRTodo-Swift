@@ -54,7 +54,7 @@ extension TodoFolderHeaderCollectionView: UICollectionViewDataSource {
     /// 设置 Cell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! TodoFolderHeaderCollectionViewCell
-        cell.backgroundColor = .white
+        cell.backgroundColor = .secondarySystemBackground
         cell.applyCornerRadius()
         cell.applyShadow()
         
