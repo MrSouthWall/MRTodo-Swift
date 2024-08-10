@@ -31,6 +31,15 @@ class TodoFolderHeaderCollectionView: UICollectionView {
         self.register(TodoFolderHeaderCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
     }
     
+    /// 设置 Cell 的背景颜色
+    private func setbackgroundColor(_ cell: TodoFolderHeaderCollectionViewCell) {
+        if UITraitCollection.current.userInterfaceStyle == .light {
+            cell.backgroundColor = .white
+        } else {
+            cell.backgroundColor = .secondarySystemBackground
+        }
+    }
+    
 
     /*
     // Only override draw() if you perform custom drawing.
@@ -54,7 +63,13 @@ extension TodoFolderHeaderCollectionView: UICollectionViewDataSource {
     /// 设置 Cell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! TodoFolderHeaderCollectionViewCell
-        cell.backgroundColor = .secondarySystemBackground
+        
+        self.setbackgroundColor(cell)
+        registerForTraitChanges([UITraitUserInterfaceStyle.self], handler: { (self: Self, previousTraitCollection: UITraitCollection) in
+            // 重新调用，以响应深色模式的变化
+            self.setbackgroundColor(cell)
+        })
+
         cell.applyCornerRadius()
         cell.applyShadow()
         
