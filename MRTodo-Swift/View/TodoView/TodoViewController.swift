@@ -33,6 +33,26 @@ class TodoViewController: UIViewController {
         todoFolderTableView.dataSource = self
         todoFolderTableView.delegate = self
         self.view.addSubview(todoFolderTableView)
+        
+        // 创建悬浮按钮
+        let floatingButton = UIButton(type: .system)
+        floatingButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        floatingButton.tintColor = .white
+        floatingButton.backgroundColor = .systemBlue
+        floatingButton.layer.cornerRadius = 30
+        floatingButton.translatesAutoresizingMaskIntoConstraints = false
+        // 将按钮添加到主视图中
+        view.addSubview(floatingButton)
+        // 设置按钮的位置
+        NSLayoutConstraint.activate([
+            floatingButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            floatingButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            floatingButton.widthAnchor.constraint(equalToConstant: 60),
+            floatingButton.heightAnchor.constraint(equalToConstant: 60),
+        ])
+        // 配置按钮点击事件
+        floatingButton.addTarget(self, action: #selector(popupToAddNewTodo), for: .touchUpInside)
+
     }
     
     /// 弹出添加新 Todo 视图
