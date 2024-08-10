@@ -53,12 +53,8 @@ extension TodoFolderHeaderCollectionView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! TodoFolderHeaderCollectionViewCell
         cell.backgroundColor = .white
-        cell.layer.cornerRadius = 10
-        cell.layer.masksToBounds = false
-        cell.layer.shadowColor = UIColor.black.cgColor
-        cell.layer.shadowOffset = CGSize(width: 0, height: 5) // 阴影的偏移量
-        cell.layer.shadowOpacity = 0.25 // 阴影的透明度
-        cell.layer.shadowRadius = 8 // 阴影的模糊半径
+        cell.applyCornerRadius()
+        cell.applyShadow()
         
         let folderData: [(icon: String, name: String, count: String)] = [
             ("star.circle.fill", "今天", "0"),

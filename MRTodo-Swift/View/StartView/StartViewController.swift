@@ -106,12 +106,8 @@ class StartViewController: UIViewController {
         updateButtonText()
         nextButton.setTitleColor(.white, for: .normal)
         nextButton.backgroundColor = .accent
-        nextButton.layer.cornerRadius = 10
-        nextButton.layer.masksToBounds = false // 设置为 false 以允许阴影渲染
-        nextButton.layer.shadowColor = UIColor.black.cgColor
-        nextButton.layer.shadowOffset = CGSize(width: 0, height: 5) // 阴影的偏移量
-        nextButton.layer.shadowOpacity = 0.25 // 阴影的透明度
-        nextButton.layer.shadowRadius = 8 // 阴影的模糊半径
+        nextButton.applyCornerRadius()
+        nextButton.applyShadow()
         nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
         nextButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nextButton)
