@@ -1,5 +1,5 @@
 //
-//  TodoTableViewController.swift
+//  TodoItemTableViewController.swift
 //  MRTodo-Swift
 //
 //  Created by 南墙先生 on 2024/8/10.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TodoTableViewController: UITableViewController {
+class TodoItemTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,7 +17,7 @@ class TodoTableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         self.navigationItem.rightBarButtonItem = self.editButtonItem
-        self.tableView.register(TodoTableViewCell.self, forCellReuseIdentifier: "cell")
+        self.tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: "cell")
     }
 
     // MARK: - Table view data source
@@ -34,7 +34,7 @@ class TodoTableViewController: UITableViewController {
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TodoTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TodoItemTableViewCell
 
         // Configure the cell...
 

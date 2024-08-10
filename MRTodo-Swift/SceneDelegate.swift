@@ -84,18 +84,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     /// 配置 TabBar 标签栏视图
     func tabBarConfigure() -> UITabBarController {
+        // 获取屏幕尺寸
+        let screenSize = self.window?.bounds ?? CGRect(x: 0, y: 0, width: 0, height: 0)
+        if screenSize == CGRect(x: 0, y: 0, width: 0, height: 0) {
+            print("警告：获取屏幕尺寸出现错误！")
+        }
         // 创建 TabBar
         let tabBarController = UITabBarController()
         // 分别创建四个视图。
         let calendarViewController = CalendarViewController()
-        let todoViewController = TodoViewController()
+        let todoTableViewController = TodoTableViewController(screenSize: screenSize, style: .insetGrouped)
         let tomatoClockViewController = TomatoClockViewController()
         let statistViewController = StatistViewController()
         // 给四个视图设置 TabBarItem 样式
         calendarViewController.tabBarItem = UITabBarItem(title: "日历日程", image: UIImage(systemName: "calendar"), tag: 0)
         
-        todoViewController.tabBarItem = UITabBarItem(title: "待办事项", image: UIImage(systemName: "text.badge.checkmark"), tag: 1)
-        let todoViewNavigationController = UINavigationController(rootViewController: todoViewController)
+        todoTableViewController.tabBarItem = UITabBarItem(title: "待办事项", image: UIImage(systemName: "text.badge.checkmark"), tag: 1)
+        let todoViewNavigationController = UINavigationController(rootViewController: todoTableViewController)
         
         tomatoClockViewController.tabBarItem = UITabBarItem(title: "番茄计时", image: UIImage(systemName: "timer"), tag: 2)
         

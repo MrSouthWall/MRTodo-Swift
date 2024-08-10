@@ -1,5 +1,5 @@
 //
-//  TodoTableViewCell.swift
+//  TodoItemTableViewCell.swift
 //  MRTodo-Swift
 //
 //  Created by 南墙先生 on 2024/8/10.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TodoTableViewCell: UITableViewCell {
+class TodoItemTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
