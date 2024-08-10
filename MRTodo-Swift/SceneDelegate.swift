@@ -93,11 +93,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let statistViewController = StatistViewController()
         // 给四个视图设置 TabBarItem 样式
         calendarViewController.tabBarItem = UITabBarItem(title: "日历日程", image: UIImage(systemName: "calendar"), tag: 0)
+        
         todoViewController.tabBarItem = UITabBarItem(title: "待办事项", image: UIImage(systemName: "text.badge.checkmark"), tag: 1)
+        let todoViewNavigationController = UINavigationController(rootViewController: todoViewController)
+        
         tomatoClockViewController.tabBarItem = UITabBarItem(title: "番茄计时", image: UIImage(systemName: "timer"), tag: 2)
+        
         statistViewController.tabBarItem = UITabBarItem(title: "统计趋势", image: UIImage(systemName: "chart.xyaxis.line"), tag: 3)
         // 把四个视图添加到 TabBar，按序添加
-        tabBarController.viewControllers = [calendarViewController, todoViewController, tomatoClockViewController, statistViewController]
+        tabBarController.viewControllers = [calendarViewController, todoViewNavigationController, tomatoClockViewController, statistViewController]
         return tabBarController
     }
 }
