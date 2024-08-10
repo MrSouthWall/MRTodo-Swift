@@ -44,7 +44,6 @@ class TodoFolderTableView: UITableView {
         layout.minimumLineSpacing = 20
         layout.minimumInteritemSpacing = 20
         layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
-        print("获取到的：\(self.bounds)")
         let todoFolderHeaderCollectionView = TodoFolderHeaderCollectionView(frame: CGRect(x: 0, y: 0, width: width, height: height), collectionViewLayout: layout)
         self.tableHeaderView = todoFolderHeaderCollectionView
     }
@@ -91,7 +90,6 @@ extension TodoFolderTableView: UITableViewDataSource {
     
     /// 设置 Header View
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        print(self.bounds.size.width)
         let headerView = UIView(frame: self.rectForHeader(inSection: 0))
         let titleLabel = UILabel(frame: headerView.bounds)
         titleLabel.text = "我的列表"
@@ -110,6 +108,7 @@ extension TodoFolderTableView: UITableViewDelegate {
     /// 选中行
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("Selected row \(indexPath.row)")
+        
     }
     
     /// 行高
