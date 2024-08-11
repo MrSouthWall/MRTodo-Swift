@@ -8,15 +8,32 @@
 import UIKit
 
 class TodoItemTableViewController: UITableViewController {
+    
+    let todoItemData: [(doneIcon: Bool, todoTitle: String, todoNote: String)] = [
+        (true, "购买杂货", "需要购买牛奶、面包、鸡蛋、蔬菜和水果。"),
+        (false, "完成项目报告", "撰写报告的总结部分，并校对所有内容，确保没有语法错误。"),
+        (true, "预约牙医", "打电话预约下周二下午三点的牙医检查。"),
+        (false, "健身房训练", "今天进行上半身力量训练，包含胸肌和背肌练习。"),
+    ]
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
+         self.clearsSelectionOnViewWillAppear = false
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         self.navigationItem.rightBarButtonItem = self.editButtonItem
+        
+        // 设置导航栏
+        self.navigationItem.title = "Think And Dreams"
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+        
+        setupTableView()
+    }
+    
+    /// 设置 Todo 文件夹列表 TableView
+    private func setupTableView() {
         self.tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: "cell")
     }
 
@@ -29,7 +46,7 @@ class TodoItemTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 30
+        return todoItemData.count
     }
 
     
@@ -37,6 +54,17 @@ class TodoItemTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TodoItemTableViewCell
 
         // Configure the cell...
+
+        var content = cell.defaultContentConfiguration()
+        content.image = UIImage(systemName: todoItemData[indexPath.row].doneIcon ? "circle" : "checkmark.circle")
+        content.text = todoItemData[indexPath.row].todoTitle
+        content.secondaryText = todoItemData[indexPath.row].todoNote
+        content.secondaryTextProperties.color = .gray
+        cell.contentConfiguration = content
+        
+//        for i in indexPath {
+//            cell.configure(doneIcon: todoItemData[i].doneIcon, todoTitle: todoItemData[i].todoTitle, todoNote: todoItemData[i].todoNote)
+//        }
 
         return cell
     }
@@ -76,7 +104,16 @@ class TodoItemTableViewController: UITableViewController {
         return true
     }
     */
+    
+    
+    // MARK: - UITableViewDelegate
+    
+    /// 行高
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
+    }
 
+    
     /*
     // MARK: - Navigation
 

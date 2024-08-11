@@ -21,7 +21,7 @@ class TodoFolderHeaderCollectionViewCell: UICollectionViewCell {
         label.textColor = .gray
         label.font = UIFont.boldSystemFont(ofSize: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textAlignment = .center
+        label.textAlignment = .left
         return label
     }()
     /// 文件夹内 Todo 数量
@@ -29,7 +29,7 @@ class TodoFolderHeaderCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 26)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textAlignment = .center
+        label.textAlignment = .right
         return label
     }()
     

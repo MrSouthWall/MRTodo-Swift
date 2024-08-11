@@ -58,7 +58,6 @@ class TodoTableViewController: UITableViewController {
     
     /// 设置 Todo 文件夹列表 HeaderView
     private func setupTableHeaderView() {
-        print(UIScreen.main)
         let width = screenSize.width
         let height = 220.0
         let layout = UICollectionViewFlowLayout()
@@ -132,6 +131,7 @@ class TodoTableViewController: UITableViewController {
         content.image = UIImage(systemName: "star")
         content.text = folderData[indexPath.row]
         cell.contentConfiguration = content
+        cell.accessoryType = .disclosureIndicator
 
         return cell
     }
@@ -192,7 +192,6 @@ class TodoTableViewController: UITableViewController {
     
     /// 选中行
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Selected row \(indexPath.row)")
         let todoTableViewController = TodoItemTableViewController(style: .plain)
         self.navigationController?.pushViewController(todoTableViewController, animated: true)
     }
