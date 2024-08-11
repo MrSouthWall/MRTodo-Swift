@@ -77,7 +77,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
 
         // Save changes in the application's managed object context when the application transitions to the background.
-        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
+        /* Xcode 自动生成的 CoreData 代码，用于在当应用程序转换到后台时，在应用程序的托管对象上下文中保存更改。
+         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
+         */
+        CoreDataManager.shared.saveContext() // 改成自建的 CoreDataManager
     }
 
     // MARK: - TabBarConfigure
