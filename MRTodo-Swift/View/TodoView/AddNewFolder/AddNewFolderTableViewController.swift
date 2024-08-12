@@ -214,8 +214,82 @@ class FolderNameCell: UITableViewCell {
 
 // MARK: - FolderColorCell
 
-class FolderColorCell: UITableViewCell {
+class FolderColorCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
+    private var collectionView: UICollectionView?
+    let colorArray: [UIColor] = [
+        .systemRed, .systemOrange, .systemYellow, .systemGreen, .systemTeal, .systemPink, .systemBlue,
+        .systemRed, .systemOrange, .systemYellow, .systemGreen, .systemTeal, .systemPink, .systemBlue,
+    ]
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupCollectionView()
+    }
+
+    private func setupCollectionView() {
+        let diameter = 40 // 圆形色块的直径
+        let sectionInset = 12.0 // 四周边距
+        let minimumLineSpacing = 12.0 // 行间距
+        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.minimumInteritemSpacing = 10
+        flowLayout.minimumLineSpacing = 12
+        flowLayout.sectionInset = UIEdgeInsets(top: sectionInset, left: sectionInset, bottom: sectionInset, right: sectionInset)
+        flowLayout.itemSize = CGSize(width: diameter, height: diameter)
+        self.collectionView = UICollectionView(frame: self.contentView.bounds, collectionViewLayout: flowLayout)
+        if let collection = self.collectionView {
+            collection.isScrollEnabled = false
+            collection.delegate = self
+            collection.dataSource = self
+            collection.backgroundColor = .secondarySystemBackground
+            collection.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
+            self.contentView.addSubview(collection)
+            collection.translatesAutoresizingMaskIntoConstraints = false
+            // 获取行数，目前仍有 Bug，在不同屏幕尺寸的手机上会导致不一样的结果
+            let numberOfRows: Int = {
+                // 获取collection view的宽度
+                let collectionViewWidth = self.contentView.bounds.size.width
+                // 获取item的宽度，包括item的最小间距
+                let itemWidth = flowLayout.itemSize.width + flowLayout.minimumInteritemSpacing
+                // 获取每行可以放置的item数量
+                let itemsPerRow = ((collectionViewWidth - flowLayout.minimumInteritemSpacing) / itemWidth)
+                // 计算总行数
+                let numberOfItems = collectionView!.numberOfItems(inSection: 0)
+                let numberOfRows = Int(Double(numberOfItems) / Double(itemsPerRow))
+                return numberOfRows
+            }()
+            // 计算高度，计算方式：(圆色块的直径 * 行数) + (行间距 * 行数减一) + (上下边距)
+            let collectionViewHeight = Double(diameter * numberOfRows) + minimumLineSpacing * Double(numberOfRows - 1) + sectionInset * 2
+            NSLayoutConstraint.activate([
+                collection.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+                collection.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+                collection.topAnchor.constraint(equalTo: contentView.topAnchor),
+                collection.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+                collection.heightAnchor.constraint(greaterThanOrEqualToConstant: collectionViewHeight),
+            ])
+        }
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
+    // MARK: - Collection View DataSource, Delegate
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return colorArray.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
+        cell.backgroundColor = colorArray[indexPath.row]
+        return cell
+    }
+
+    // MARK: - Collection View Delegate
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("Selected item at \(indexPath)")
+    }
 }
 
 
@@ -224,3 +298,33 @@ class FolderColorCell: UITableViewCell {
 class FolderIconCell: UITableViewCell {
     
 }
+
+
+/*
+ //// MARK: - Collection View DataSource, Delegate
+
+ //extension AddNewFolderTableViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+ //    private let items = Array(repeating: "Item", count: 10)
+ //
+ //    override func viewDidLoad() {
+ //        super.viewDidLoad()
+ //        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: "CustomCell")
+ //    }
+ //
+ //    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+ //        return 10
+ //    }
+ //
+ //    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+ //        guard let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as? CustomTableViewCell else {
+ //            return UITableViewCell()
+ //        }
+ //
+ //        cell.configure(with: items, delegate: self, dataSource: self)
+ //        return cell
+ //    }
+ //
+ //
+ //}
+
+ */
