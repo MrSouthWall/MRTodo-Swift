@@ -136,11 +136,6 @@ class TodoTableViewController: UITableViewController {
         return cell
     }
     
-    /// Header 的高度
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 40
-    }
-    
     /// 设置 Header View
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView(frame: tableView.rectForHeader(inSection: 0))
@@ -176,7 +171,7 @@ class TodoTableViewController: UITableViewController {
     /// 弹出新建文件夹窗口
     @objc func popupToAddNewFolder() {
         // 创建要弹出的视图控制器
-        let addNewFolderTableViewController = AddNewFolderTableViewController()
+        let addNewFolderTableViewController = AddNewFolderTableViewController(style: .insetGrouped)
         // 创建导航栏
         let addNewFolderTableNavigationController = UINavigationController(rootViewController: addNewFolderTableViewController)
         // 设置弹出方式
@@ -222,6 +217,11 @@ class TodoTableViewController: UITableViewController {
     
     
     // MARK: - UITableViewDelegate
+    
+    /// Header 的高度
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40
+    }
     
     /// 选中行
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

@@ -21,9 +21,8 @@ class AddNewFolderTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
-        self.view.backgroundColor = .systemBackground
         setupNavigationBar()
-        setupInputView()
+        setupTableView()
     }
     
     /// 设置导航栏
@@ -35,6 +34,15 @@ class AddNewFolderTableViewController: UITableViewController {
         // 取消按钮
         let cancelButton = UIBarButtonItem(title: "取消", style: .plain, target: self, action: #selector(cancelButton))
         self.navigationItem.leftBarButtonItem = cancelButton
+    }
+    
+    /// 设置 TableView
+    private func setupTableView() {
+        tableView.estimatedRowHeight = 200 // 预估行高
+        tableView.rowHeight = UITableView.automaticDimension // 自动计算行高
+        self.tableView.register(FolderNameCell.self, forCellReuseIdentifier: "FolderNameCell")
+        self.tableView.register(FolderColorCell.self, forCellReuseIdentifier: "FolderColorCell")
+        self.tableView.register(FolderIconCell.self, forCellReuseIdentifier: "FolderIconCell")
     }
     
     /// 完成按钮执行函数
@@ -49,65 +57,35 @@ class AddNewFolderTableViewController: UITableViewController {
         self.dismiss(animated: true)
     }
     
-    /// 设置视图
-    private func setupInputView() {
-        // 设置文件夹 Icon
-        let folderIcon = FolderIcon(icon: icon, color: color, diameter: 100)
-        self.view.addSubview(folderIcon)
-        folderIcon.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            folderIcon.widthAnchor.constraint(equalToConstant: folderIcon.diameter),
-            folderIcon.heightAnchor.constraint(equalToConstant: folderIcon.diameter),
-            folderIcon.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            folderIcon.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 50),
-        ])
-        
-        // 设置文件夹名字
-        let folderName = UITextField(frame: .zero)
-        folderName.backgroundColor = .systemGray5
-        folderName.applyCornerRadius()
-        folderName.textAlignment = .center
-        let placeholderString = "列表名称"
-        let attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: UIColor.lightGray, // 设置文本颜色
-            .font: UIFont.boldSystemFont(ofSize: 22) // 设置字体
-        ]
-        let attributedPlaceholder = NSAttributedString(string: placeholderString, attributes: attributes)
-        // 将 NSAttributedString 分配给文本字段的 attributedPlaceholder 属性
-        folderName.attributedPlaceholder = attributedPlaceholder
-        self.view.addSubview(folderName)
-        folderName.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            folderName.heightAnchor.constraint(equalToConstant: 50),
-            folderName.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            folderName.topAnchor.constraint(equalTo: folderIcon.bottomAnchor, constant: 30),
-            folderName.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            folderName.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-        ])
-    }
-    
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 3
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 0
+        return 1
     }
 
-    /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
         // Configure the cell...
-
-        return cell
+        switch indexPath.section {
+        case 0:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "FolderNameCell", for: indexPath) as! FolderNameCell
+            return cell
+        case 1:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "FolderColorCell", for: indexPath) as! FolderColorCell
+            return cell
+        case 2:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "FolderIconCell", for: indexPath) as! FolderIconCell
+            return cell
+        default:
+            return UITableViewCell()
+        }
     }
-    */
 
     /*
     // Override to support conditional editing of the table view.
@@ -143,6 +121,25 @@ class AddNewFolderTableViewController: UITableViewController {
         return true
     }
     */
+    
+    
+    // MARK: - Table view data Delegate
+    
+    /// 设置 Header 视图
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return nil
+    }
+    
+    /// 设置 Header 行高
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        switch section {
+        case 0:
+            return 10
+        default:
+            return UITableView.automaticDimension // 自动计算
+        }
+    }
+
 
     /*
     // MARK: - Navigation
@@ -154,4 +151,76 @@ class AddNewFolderTableViewController: UITableViewController {
     }
     */
 
+}
+
+
+// MARK: - FolderNameCell
+
+class FolderNameCell: UITableViewCell {
+    
+    var icon: String = "list.bullet"
+    var color: String = "#2D91F5"
+    
+    // 覆盖默认的初始化方法，提供默认值
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        self.selectionStyle = .none
+        setupFolderNameCell()
+    }
+    
+    /// 设置视图
+    private func setupFolderNameCell() {
+        // 设置文件夹 Icon
+        let folderIcon = FolderIcon(icon: icon, color: color, diameter: 100)
+        self.contentView.addSubview(folderIcon)
+        folderIcon.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            folderIcon.heightAnchor.constraint(equalToConstant: folderIcon.diameter),
+            folderIcon.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor),
+            folderIcon.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 20),
+        ])
+        
+        // 设置文件夹名字
+        let folderName = UITextField(frame: .zero)
+        folderName.backgroundColor = .systemGray5
+        folderName.applyCornerRadius()
+        folderName.textAlignment = .center
+        let placeholderString = "列表名称"
+        let attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.lightGray, // 设置文本颜色
+            .font: UIFont.boldSystemFont(ofSize: 22) // 设置字体
+        ]
+        let attributedPlaceholder = NSAttributedString(string: placeholderString, attributes: attributes)
+        // 将 NSAttributedString 分配给文本字段的 attributedPlaceholder 属性
+        folderName.attributedPlaceholder = attributedPlaceholder
+        self.contentView.addSubview(folderName)
+        folderName.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            folderName.heightAnchor.constraint(equalToConstant: 50),
+            folderName.topAnchor.constraint(greaterThanOrEqualTo: folderIcon.bottomAnchor, constant: 20),
+            folderName.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -20),
+            folderName.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 20),
+            folderName.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -20),
+        ])
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+}
+
+
+// MARK: - FolderColorCell
+
+class FolderColorCell: UITableViewCell {
+    
+}
+
+
+// MARK: - FolderIconCell
+
+class FolderIconCell: UITableViewCell {
+    
 }
