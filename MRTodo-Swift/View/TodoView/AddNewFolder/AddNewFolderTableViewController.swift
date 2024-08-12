@@ -1,5 +1,5 @@
 //
-//  AddNewFolderViewController.swift
+//  AddNewFolderTableViewController.swift
 //  MRTodo-Swift
 //
 //  Created by 南墙先生 on 2024/8/12.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AddNewFolderViewController: UIViewController {
+class AddNewFolderTableViewController: UITableViewController {
     
     private let icon: String = "list.bullet"
     private let color: String = "#2D91F5"
@@ -15,7 +15,11 @@ class AddNewFolderViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        // Uncomment the following line to preserve selection between presentations
+        // self.clearsSelectionOnViewWillAppear = false
+
+        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+        // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
         self.view.backgroundColor = .systemBackground
         setupNavigationBar()
@@ -62,7 +66,6 @@ class AddNewFolderViewController: UIViewController {
         let folderName = UITextField(frame: .zero)
         folderName.backgroundColor = .systemGray5
         folderName.applyCornerRadius()
-//        folderName.applyShadow()
         folderName.textAlignment = .center
         let placeholderString = "列表名称"
         let attributes: [NSAttributedString.Key: Any] = [
@@ -83,7 +86,64 @@ class AddNewFolderViewController: UIViewController {
         ])
     }
     
-    
+
+    // MARK: - Table view data source
+
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        // #warning Incomplete implementation, return the number of sections
+        return 0
+    }
+
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // #warning Incomplete implementation, return the number of rows
+        return 0
+    }
+
+    /*
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
+
+        // Configure the cell...
+
+        return cell
+    }
+    */
+
+    /*
+    // Override to support conditional editing of the table view.
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        // Return false if you do not want the specified item to be editable.
+        return true
+    }
+    */
+
+    /*
+    // Override to support editing the table view.
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            // Delete the row from the data source
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        } else if editingStyle == .insert {
+            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+        }    
+    }
+    */
+
+    /*
+    // Override to support rearranging the table view.
+    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
+
+    }
+    */
+
+    /*
+    // Override to support conditional rearranging of the table view.
+    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        // Return false if you do not want the item to be re-orderable.
+        return true
+    }
+    */
+
     /*
     // MARK: - Navigation
 

@@ -176,13 +176,13 @@ class TodoTableViewController: UITableViewController {
     /// 弹出新建文件夹窗口
     @objc func popupToAddNewFolder() {
         // 创建要弹出的视图控制器
-        let addNewFolderViewController = AddNewFolderViewController()
+        let addNewFolderTableViewController = AddNewFolderTableViewController()
         // 创建导航栏
-        let addNewFolderNavigationController = UINavigationController(rootViewController: addNewFolderViewController)
+        let addNewFolderTableNavigationController = UINavigationController(rootViewController: addNewFolderTableViewController)
         // 设置弹出方式
-        addNewFolderNavigationController.modalPresentationStyle = .pageSheet
+        addNewFolderTableNavigationController.modalPresentationStyle = .pageSheet
         // 弹出视图控制器
-        self.present(addNewFolderNavigationController, animated: true, completion: nil)
+        self.present(addNewFolderTableNavigationController, animated: true, completion: nil)
     }
 
     /*
