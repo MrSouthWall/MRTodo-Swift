@@ -47,6 +47,7 @@ class AddNewFolderViewController: UIViewController {
     
     /// 设置视图
     private func setupInputView() {
+        // 设置文件夹 Icon
         let folderIcon = FolderIcon(icon: icon, color: color, diameter: 100)
         self.view.addSubview(folderIcon)
         folderIcon.translatesAutoresizingMaskIntoConstraints = false
@@ -55,6 +56,30 @@ class AddNewFolderViewController: UIViewController {
             folderIcon.heightAnchor.constraint(equalToConstant: folderIcon.diameter),
             folderIcon.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             folderIcon.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 50),
+        ])
+        
+        // 设置文件夹名字
+        let folderName = UITextField(frame: .zero)
+        folderName.backgroundColor = .systemGray5
+        folderName.applyCornerRadius()
+//        folderName.applyShadow()
+        folderName.textAlignment = .center
+        let placeholderString = "列表名称"
+        let attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.lightGray, // 设置文本颜色
+            .font: UIFont.boldSystemFont(ofSize: 22) // 设置字体
+        ]
+        let attributedPlaceholder = NSAttributedString(string: placeholderString, attributes: attributes)
+        // 将 NSAttributedString 分配给文本字段的 attributedPlaceholder 属性
+        folderName.attributedPlaceholder = attributedPlaceholder
+        self.view.addSubview(folderName)
+        folderName.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            folderName.heightAnchor.constraint(equalToConstant: 50),
+            folderName.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            folderName.topAnchor.constraint(equalTo: folderIcon.bottomAnchor, constant: 30),
+            folderName.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            folderName.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
         ])
     }
     

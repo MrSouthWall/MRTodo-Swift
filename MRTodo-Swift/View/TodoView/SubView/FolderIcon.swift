@@ -25,7 +25,7 @@ class FolderIcon: UIView {
         let circle = UIView(frame: .zero)
         circle.backgroundColor = UIColor.colorForHex(color)
         circle.applyCornerRadius(cornerRadius: diameter / 2)
-        circle.applyShadow()
+        circle.applyShadow(color: UIColor.colorForHex(color), radius: 10)
         circle.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(circle)
         NSLayoutConstraint.activate([

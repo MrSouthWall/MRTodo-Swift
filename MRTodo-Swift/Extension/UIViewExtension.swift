@@ -16,8 +16,8 @@ extension UIView {
     ///   - offset: 阴影偏移
     ///   - opacity: 阴影透明度
     ///   - radius: 阴影模糊半径
-    func applyShadow(color: UIColor = .black, offset: CGSize = CGSize(width: 0, height: 5), opacity: Float = 0.25, radius: CGFloat = 8.0) {
-        self.layer.shadowColor = color.cgColor
+    func applyShadow(color: UIColor? = .black, offset: CGSize = CGSize(width: 0, height: 5), opacity: Float = 0.25, radius: CGFloat = 8.0) {
+        self.layer.shadowColor = color?.cgColor
         self.layer.shadowOffset = offset
         self.layer.shadowOpacity = opacity
         self.layer.shadowRadius = radius
