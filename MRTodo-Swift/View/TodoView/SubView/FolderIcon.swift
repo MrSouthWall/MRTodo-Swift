@@ -23,7 +23,7 @@ class FolderIcon: UIView {
     
     private func setupView() {
         let circle = UIView(frame: .zero)
-        circle.backgroundColor = .systemRed
+        circle.backgroundColor = UIColor.colorForHex(color)
         circle.applyCornerRadius(cornerRadius: diameter / 2)
         circle.applyShadow()
         circle.translatesAutoresizingMaskIntoConstraints = false
