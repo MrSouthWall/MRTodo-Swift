@@ -97,13 +97,13 @@ class TodoTableViewController: UITableViewController {
     /// 弹出添加新 Todo 视图
     @objc private func popupToAddNewTodo() {
         // 创建要弹出的视图控制器
-        let addTodoViewController = AddTodoViewController()
+        let addNewTodoViewController = AddNewTodoViewController()
         // 创建导航栏
-        let addTodoNavigationController = UINavigationController(rootViewController: addTodoViewController)
+        let addNewTodoNavigationController = UINavigationController(rootViewController: addNewTodoViewController)
         // 设置弹出方式
-        addTodoNavigationController.modalPresentationStyle = .pageSheet
+        addNewTodoNavigationController.modalPresentationStyle = .pageSheet
         // 弹出视图控制器
-        self.present(addTodoNavigationController, animated: true, completion: nil)
+        self.present(addNewTodoNavigationController, animated: true, completion: nil)
     }
     
 
@@ -144,12 +144,45 @@ class TodoTableViewController: UITableViewController {
     /// 设置 Header View
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView(frame: tableView.rectForHeader(inSection: 0))
+        // 我的列表标题
         let titleLabel = UILabel(frame: headerView.bounds)
         titleLabel.text = "我的列表"
         titleLabel.textColor = .label
         titleLabel.font = UIFont.boldSystemFont(ofSize: 24)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         headerView.addSubview(titleLabel)
+        NSLayoutConstraint.activate([
+            titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
+            titleLabel.heightAnchor.constraint(equalToConstant: headerView.bounds.height),
+        ])
+        // 新建文件夹按钮
+        let addNewFolderButton = UIButton(type: .system)
+        addNewFolderButton.frame = headerView.bounds
+        addNewFolderButton.setImage(UIImage(systemName: "folder.badge.plus"), for: .normal)
+        addNewFolderButton.tintColor = .accent
+        addNewFolderButton.addTarget(self, action: #selector(popupToAddNewFolder), for: .touchUpInside)
+        addNewFolderButton.translatesAutoresizingMaskIntoConstraints = false
+        headerView.addSubview(addNewFolderButton)
+        NSLayoutConstraint.activate([
+            addNewFolderButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            addNewFolderButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
+            addNewFolderButton.heightAnchor.constraint(equalToConstant: headerView.bounds.height),
+            addNewFolderButton.widthAnchor.constraint(equalToConstant: headerView.bounds.height),
+        ])
         return headerView
+    }
+    
+    /// 弹出新建文件夹窗口
+    @objc func popupToAddNewFolder() {
+        // 创建要弹出的视图控制器
+        let addNewFolderViewController = AddNewFolderViewController()
+        // 创建导航栏
+        let addNewFolderNavigationController = UINavigationController(rootViewController: addNewFolderViewController)
+        // 设置弹出方式
+        addNewFolderNavigationController.modalPresentationStyle = .pageSheet
+        // 弹出视图控制器
+        self.present(addNewFolderNavigationController, animated: true, completion: nil)
     }
 
     /*

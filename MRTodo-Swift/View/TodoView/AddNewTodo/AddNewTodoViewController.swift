@@ -1,5 +1,5 @@
 //
-//  AddTodoViewController.swift
+//  AddNewTodoViewController.swift
 //  MRTodo-Swift
 //
 //  Created by 南墙先生 on 2024/8/10.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AddTodoViewController: UIViewController {
+class AddNewTodoViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
