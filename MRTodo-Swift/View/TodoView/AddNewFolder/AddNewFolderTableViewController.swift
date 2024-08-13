@@ -215,7 +215,6 @@ class FolderNameCell: UITableViewCell {
 // MARK: - FolderColorCell
 
 class FolderColorCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
-    private var collectionView: UICollectionView?
     let colorArray: [UIColor] = [
         .systemRed, .systemOrange, .systemYellow, .systemGreen, .systemTeal, .systemPink, .systemBlue,
         .systemRed, .systemOrange, .systemYellow, .systemGreen, .systemTeal, .systemPink, .systemBlue,
@@ -227,46 +226,32 @@ class FolderColorCell: UITableViewCell, UICollectionViewDataSource, UICollection
     }
 
     private func setupCollectionView() {
-        let diameter = 40 // 圆形色块的直径
-        let sectionInset = 12.0 // 四周边距
-        let minimumLineSpacing = 12.0 // 行间距
+        
         let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.minimumInteritemSpacing = 10
-        flowLayout.minimumLineSpacing = 12
+        let sectionInset = 12.0 // 四周边距
         flowLayout.sectionInset = UIEdgeInsets(top: sectionInset, left: sectionInset, bottom: sectionInset, right: sectionInset)
+        let diameter = 38 // 圆形色块的直径
         flowLayout.itemSize = CGSize(width: diameter, height: diameter)
-        self.collectionView = UICollectionView(frame: self.contentView.bounds, collectionViewLayout: flowLayout)
-        if let collection = self.collectionView {
-            collection.isScrollEnabled = false
-            collection.delegate = self
-            collection.dataSource = self
-            collection.backgroundColor = .secondarySystemBackground
-            collection.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
-            self.contentView.addSubview(collection)
-            collection.translatesAutoresizingMaskIntoConstraints = false
-            // 获取行数，目前仍有 Bug，在不同屏幕尺寸的手机上会导致不一样的结果
-            let numberOfRows: Int = {
-                // 获取collection view的宽度
-                let collectionViewWidth = self.contentView.bounds.size.width
-                // 获取item的宽度，包括item的最小间距
-                let itemWidth = flowLayout.itemSize.width + flowLayout.minimumInteritemSpacing
-                // 获取每行可以放置的item数量
-                let itemsPerRow = ((collectionViewWidth - flowLayout.minimumInteritemSpacing) / itemWidth)
-                // 计算总行数
-                let numberOfItems = collectionView!.numberOfItems(inSection: 0)
-                let numberOfRows = Int(Double(numberOfItems) / Double(itemsPerRow))
-                return numberOfRows
-            }()
-            // 计算高度，计算方式：(圆色块的直径 * 行数) + (行间距 * 行数减一) + (上下边距)
-            let collectionViewHeight = Double(diameter * numberOfRows) + minimumLineSpacing * Double(numberOfRows - 1) + sectionInset * 2
-            NSLayoutConstraint.activate([
-                collection.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-                collection.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-                collection.topAnchor.constraint(equalTo: contentView.topAnchor),
-                collection.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-                collection.heightAnchor.constraint(greaterThanOrEqualToConstant: collectionViewHeight),
-            ])
-        }
+        // 计算公式：两倍边距 + 一倍行间距 + 两倍元素尺寸
+        let height = (flowLayout.sectionInset.top * 2) + flowLayout.minimumLineSpacing + (flowLayout.itemSize.height * 2)
+        let collectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: self.contentView.bounds.width, height: height), collectionViewLayout: flowLayout)
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.backgroundColor = .clear
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
+        self.contentView.addSubview(collectionView)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        /* 开发小插曲：这行代码真的诡异，其他代码不变，加上这行 Print，就会导致 CollectionView 内的 Cell 产生类似左对齐的效果，右边会空出一点
+         print(flowLayout.collectionViewContentSize)
+         */
+        NSLayoutConstraint.activate([
+            collectionView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor),
+            collectionView.topAnchor.constraint(equalTo: self.contentView.topAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor),
+            collectionView.heightAnchor.constraint(greaterThanOrEqualToConstant: height),
+        ])
     }
 
     required init?(coder: NSCoder) {
@@ -275,10 +260,12 @@ class FolderColorCell: UITableViewCell, UICollectionViewDataSource, UICollection
     
     // MARK: - Collection View DataSource, Delegate
 
+    /// Cell 个数
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return colorArray.count
     }
 
+    /// 设置 CollectionView 的 Cell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
         cell.backgroundColor = colorArray[indexPath.row]
@@ -287,6 +274,7 @@ class FolderColorCell: UITableViewCell, UICollectionViewDataSource, UICollection
 
     // MARK: - Collection View Delegate
 
+    /// 点击 Cell 执行
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("Selected item at \(indexPath)")
     }
@@ -298,33 +286,3 @@ class FolderColorCell: UITableViewCell, UICollectionViewDataSource, UICollection
 class FolderIconCell: UITableViewCell {
     
 }
-
-
-/*
- //// MARK: - Collection View DataSource, Delegate
-
- //extension AddNewFolderTableViewController: UICollectionViewDataSource, UICollectionViewDelegate {
- //    private let items = Array(repeating: "Item", count: 10)
- //
- //    override func viewDidLoad() {
- //        super.viewDidLoad()
- //        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: "CustomCell")
- //    }
- //
- //    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
- //        return 10
- //    }
- //
- //    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
- //        guard let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as? CustomTableViewCell else {
- //            return UITableViewCell()
- //        }
- //
- //        cell.configure(with: items, delegate: self, dataSource: self)
- //        return cell
- //    }
- //
- //
- //}
-
- */
