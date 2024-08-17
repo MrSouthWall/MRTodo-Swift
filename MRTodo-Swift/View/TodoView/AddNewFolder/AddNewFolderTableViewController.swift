@@ -10,7 +10,7 @@ import UIKit
 class AddNewFolderTableViewController: UITableViewController {
     
     let folderIconData = FolderIconData.shared
-    let coreDataManager = CoreDataManager.shared
+    let coreDataManager = MRCoreDataManager.shared
     
     var onSaveData: (() -> Void)?
 

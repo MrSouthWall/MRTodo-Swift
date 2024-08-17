@@ -1,5 +1,5 @@
 //
-//  CoreDataManager.swift
+//  MRCoreDataManager.swift
 //  MRTodo-Swift
 //
 //  Created by 南墙先生 on 2024/8/11.
@@ -9,12 +9,12 @@ import UIKit
 import CoreData
 
 /// CoreData 管理者
-class CoreDataManager {
+class MRCoreDataManager {
     
     /// 单例模式
-    static let shared = CoreDataManager()
+    static let shared = MRCoreDataManager()
     
-    /// 确保了 CoreDataManager 类的构造器只能由类的内部调用，确保只有一个 shared 实例存在
+    /// 确保了 MRCoreDataManager 类的构造器只能由类的内部调用，确保只有一个 shared 实例存在
     private init() {}
     
     // MARK: - Core Data stack

@@ -80,7 +80,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         /* Xcode 自动生成的 CoreData 代码，用于在当应用程序转换到后台时，在应用程序的托管对象上下文中保存更改。
          (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
          */
-        CoreDataManager.shared.saveContext() // 改成自建的 CoreDataManager
+        MRCoreDataManager.shared.saveContext() // 改成自建的 MRCoreDataManager
     }
 
     // MARK: - TabBarConfigure

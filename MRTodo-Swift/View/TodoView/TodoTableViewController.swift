@@ -29,13 +29,8 @@ class TodoTableViewController: UITableViewController {
     }
     
     /// Todo 列表文件夹数据
-//    var folderData = [
-//        "Don't Ask! Just Do It!",
-//        "Think And Dreams",
-//        "Work",
-//    ]
     var folderData: [Folder] {
-        let coreDataManager = CoreDataManager.shared
+        let coreDataManager = MRCoreDataManager.shared
         let context = coreDataManager.context
         if let folderData = try? context.fetch(Folder.fetchRequest()) {
             return folderData
