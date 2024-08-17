@@ -40,7 +40,7 @@ class FolderNameTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             folderIcon.heightAnchor.constraint(equalToConstant: folderIcon.diameter),
             folderIcon.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor),
-            folderIcon.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 20),
+            folderIcon.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 30),
         ])
         
         // 设置文件夹名字
@@ -60,8 +60,8 @@ class FolderNameTableViewCell: UITableViewCell {
         folderName.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             folderName.heightAnchor.constraint(equalToConstant: 50),
-            folderName.topAnchor.constraint(greaterThanOrEqualTo: folderIcon.bottomAnchor, constant: 20),
-            folderName.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -20),
+            folderName.topAnchor.constraint(greaterThanOrEqualTo: folderIcon.bottomAnchor, constant: 30),
+            folderName.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -30),
             folderName.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 20),
             folderName.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -20),
         ])
