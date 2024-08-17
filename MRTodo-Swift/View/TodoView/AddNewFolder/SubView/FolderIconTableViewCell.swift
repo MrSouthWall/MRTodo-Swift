@@ -43,6 +43,7 @@ class FolderIconTableViewCell: UITableViewCell {
         let height = (flowLayout.sectionInset.top * 2) + flowLayout.minimumLineSpacing * 10 + (flowLayout.itemSize.height * 11)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        collectionView.backgroundColor = .clear
         collectionView.showsVerticalScrollIndicator = false
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -92,7 +93,7 @@ extension FolderIconTableViewCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifierCell, for: indexPath) as! CircularSelectorCollectionViewCell
 
-        cell.configureColor(with: "#F4F4F4")
+        cell.configureColor(withUIcolor: .folderIconBackground)
         let cornerRadius = cell.bounds.width / 2
         cell.configureCornerRadius(with: cornerRadius)
         cell.configureIcon(with: iconArray[indexPath.row])

@@ -34,6 +34,7 @@ class FolderColorTableViewCell: UITableViewCell {
         let height = (flowLayout.sectionInset.top * 2) + flowLayout.minimumLineSpacing + (flowLayout.itemSize.height * 2)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        collectionView.backgroundColor = .clear
         collectionView.showsVerticalScrollIndicator = false
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -84,7 +85,7 @@ extension FolderColorTableViewCell: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifierCell, for: indexPath) as! CircularSelectorCollectionViewCell
 
         let currentCellColor = colorArray[indexPath.row]
-        cell.configureColor(with: currentCellColor)
+        cell.configureColor(withHex: currentCellColor)
         let cornerRadius = cell.bounds.width / 2
         cell.configureCornerRadius(with: cornerRadius)
         

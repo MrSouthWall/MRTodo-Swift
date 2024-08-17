@@ -39,7 +39,7 @@ class FolderNameTableViewCell: UITableViewCell {
         
         // 设置文件夹名字
         folderName.delegate = self
-        folderName.backgroundColor = .systemGray5
+        folderName.backgroundColor = .folderTextField
         folderName.applyCornerRadius()
         folderName.textAlignment = .center
         let placeholderString = "列表名称"

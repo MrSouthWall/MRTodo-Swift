@@ -33,7 +33,7 @@ class CircularSelectorCollectionViewCell: UICollectionViewCell {
     /// 配置 Icon
     private func setupIconView() {
         iconView.contentMode = .scaleAspectFit
-        iconView.tintColor = .darkGray
+        iconView.tintColor = .folderIcon
         contentView.addSubview(iconView)
         iconView.translatesAutoresizingMaskIntoConstraints = false
         let margin = 8.0
@@ -45,9 +45,14 @@ class CircularSelectorCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    /// 配置颜色
-    func configureColor(with colorForHex: String) {
+    /// 配置 Hex 颜色
+    func configureColor(withHex colorForHex: String) {
         colorView.backgroundColor = UIColor.colorForHex(colorForHex)
+    }
+    
+    /// 配置颜色
+    func configureColor(withUIcolor color: UIColor) {
+        colorView.backgroundColor = color
     }
     
     /// 配置圆角
