@@ -15,9 +15,13 @@ class TodoTableViewController: UITableViewController {
      但是这里有个问题，实际无法获取到，因为在需要获取屏幕尺寸的时候，视图层级还未完全建立。
      所以只能通过从外部传递一个值进来，曲线救国解决问题。
      */
-    let screenSize: CGRect
+    private let screenSize: CGRect
     
-    let folderIconData = FolderIconData.shared
+    private let coreDataManager = MRCoreDataManager.shared
+    private let folderIconData = FolderIconData.shared
+    
+    /// Todo 列表文件夹数据
+    private var folderData: [Folder] = []
     
     init(screenSize: CGRect, style: UITableView.Style) {
         self.screenSize = screenSize
@@ -27,18 +31,6 @@ class TodoTableViewController: UITableViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    /// Todo 列表文件夹数据
-    var folderData: [Folder] {
-        let coreDataManager = MRCoreDataManager.shared
-        let context = coreDataManager.context
-        if let folderData = try? context.fetch(Folder.fetchRequest()) {
-            return folderData
-        } else {
-            print("从 CoreData 取出文件夹数据失败！")
-            return []
-        }
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,10 +39,20 @@ class TodoTableViewController: UITableViewController {
         self.clearsSelectionOnViewWillAppear = true
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-         self.navigationItem.rightBarButtonItem = self.editButtonItem
+        self.navigationItem.rightBarButtonItem = self.editButtonItem
         
         // 设置导航栏
         self.navigationItem.title = "待办事项"
+        
+        // 从 CoreData 取出数据
+        let context = coreDataManager.context
+        let request = Folder.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(key: "orderId", ascending: true)]
+        if let folderData = try? context.fetch(request) {
+            self.folderData = folderData
+        } else {
+            print("从 CoreData 取出文件夹数据失败！")
+        }
         
         // 设置视图
         setupTableView()
@@ -133,6 +135,8 @@ class TodoTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
 
         // Configure the cell...
+        folderData[indexPath.row].orderId = Int16(indexPath.row)
+        coreDataManager.saveContext()
         
         var content = cell.defaultContentConfiguration()
         let icon = folderData[indexPath.row].icon!
@@ -201,24 +205,29 @@ class TodoTableViewController: UITableViewController {
     }
     */
 
-    /*
+    // 提供删除功能
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // Delete the row from the data source
+            
+            let deleteItem = folderData[indexPath.row]
+            coreDataManager.context.delete(deleteItem)
+            
             tableView.deleteRows(at: [indexPath], with: .fade)
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
     }
-    */
-
-    /*
+    
+    // 提供排序功能
     // Override to support rearranging the table view.
     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
+        let folderToRemove = folderData[fromIndexPath.row] // 暂存被替换的数据
+        folderData.remove(at: fromIndexPath.row) // 移动数据
+        folderData.insert(folderToRemove, at: to.row) // 把暂存的数据插入回来
+        tableView.reloadData() // 重新加载数据，以重新分配 orderId
     }
-    */
 
     /*
     // Override to support conditional rearranging of the table view.
