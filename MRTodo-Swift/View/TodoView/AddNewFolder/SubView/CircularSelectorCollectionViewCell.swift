@@ -18,6 +18,7 @@ class CircularSelectorCollectionViewCell: UICollectionViewCell {
         setupIconView()
     }
     
+    /// 配置颜色
     private func setupColorView() {
         contentView.addSubview(colorView)
         colorView.translatesAutoresizingMaskIntoConstraints = false
@@ -29,16 +30,18 @@ class CircularSelectorCollectionViewCell: UICollectionViewCell {
         ])
     }
     
+    /// 配置 Icon
     private func setupIconView() {
         iconView.contentMode = .scaleAspectFit
         iconView.tintColor = .darkGray
         contentView.addSubview(iconView)
         iconView.translatesAutoresizingMaskIntoConstraints = false
+        let margin = 8.0
         NSLayoutConstraint.activate([
-            iconView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            iconView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
-            iconView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            iconView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
+            iconView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: margin),
+            iconView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -margin),
+            iconView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: margin),
+            iconView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -margin),
         ])
     }
     
@@ -54,7 +57,7 @@ class CircularSelectorCollectionViewCell: UICollectionViewCell {
     
     /// 配置 Icon
     func configureIcon(with systemName: String) {
-        iconView.image = UIImage(systemName: systemName)
+        iconView.image = UIImage(systemName: systemName)?.withConfiguration(UIImage.SymbolConfiguration(weight: .bold))
     }
     
     required init?(coder: NSCoder) {
