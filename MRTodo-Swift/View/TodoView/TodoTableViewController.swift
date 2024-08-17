@@ -211,9 +211,11 @@ class TodoTableViewController: UITableViewController {
         if editingStyle == .delete {
             // Delete the row from the data source
             
-            let deleteItem = folderData[indexPath.row]
+            let deleteItem = folderData[indexPath.row] // 取出要删除的项目
+            // 先删除内存中的数据，再删除 CoreData 中的数据
+            folderData.remove(at: indexPath.row)
             coreDataManager.context.delete(deleteItem)
-            
+            // 最后从表格视图中删除行
             tableView.deleteRows(at: [indexPath], with: .fade)
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
