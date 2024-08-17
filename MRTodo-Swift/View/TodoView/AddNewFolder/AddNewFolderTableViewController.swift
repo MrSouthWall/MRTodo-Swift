@@ -9,8 +9,10 @@ import UIKit
 
 class AddNewFolderTableViewController: UITableViewController {
     
-    private let icon: String = "list.bullet"
-    private let color: String = "#2D91F5"
+    let folderIconData = FolderIconData.shared
+    let coreDataManager = CoreDataManager.shared
+    
+    var onSaveData: (() -> Void)?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,6 +50,14 @@ class AddNewFolderTableViewController: UITableViewController {
     /// 完成按钮执行函数
     @objc private func doneButton() {
         // 用户点击了完成按钮
+        // 存到 CoreData
+        let context = coreDataManager.context
+        let folder = Folder(context: context)
+        folder.name = folderIconData.name
+        folder.color = folderIconData.color
+        folder.icon = folderIconData.icon
+        coreDataManager.saveContext()
+        onSaveData?()
         self.dismiss(animated: true)
     }
     

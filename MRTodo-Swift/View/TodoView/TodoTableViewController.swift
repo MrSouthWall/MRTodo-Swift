@@ -17,6 +17,8 @@ class TodoTableViewController: UITableViewController {
      */
     let screenSize: CGRect
     
+    let folderIconData = FolderIconData.shared
+    
     init(screenSize: CGRect, style: UITableView.Style) {
         self.screenSize = screenSize
         super.init(style: style)
@@ -27,11 +29,21 @@ class TodoTableViewController: UITableViewController {
     }
     
     /// Todo 列表文件夹数据
-    var folderData = [
-        "Don't Ask! Just Do It!",
-        "Think And Dreams",
-        "Work",
-    ]
+//    var folderData = [
+//        "Don't Ask! Just Do It!",
+//        "Think And Dreams",
+//        "Work",
+//    ]
+    var folderData: [Folder] {
+        let coreDataManager = CoreDataManager.shared
+        let context = coreDataManager.context
+        if let folderData = try? context.fetch(Folder.fetchRequest()) {
+            return folderData
+        } else {
+            print("从 CoreData 取出文件夹数据失败！")
+            return []
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -128,8 +140,9 @@ class TodoTableViewController: UITableViewController {
         // Configure the cell...
         
         var content = cell.defaultContentConfiguration()
-        content.image = UIImage(systemName: "star")
-        content.text = folderData[indexPath.row]
+        let icon = folderData[indexPath.row].icon!
+        content.image = UIImage(systemName: icon)
+        content.text = folderData[indexPath.row].name!
         cell.contentConfiguration = content
         cell.accessoryType = .disclosureIndicator
 
@@ -170,8 +183,13 @@ class TodoTableViewController: UITableViewController {
     
     /// 弹出新建文件夹窗口
     @objc func popupToAddNewFolder() {
+        // 初始化文件夹数据
+        folderIconData.resetToDefault()
         // 创建要弹出的视图控制器
         let addNewFolderTableViewController = AddNewFolderTableViewController(style: .insetGrouped)
+        addNewFolderTableViewController.onSaveData = { [weak self] in
+            self?.tableView.reloadData()
+        }
         // 创建导航栏
         let addNewFolderTableNavigationController = UINavigationController(rootViewController: addNewFolderTableViewController)
         // 设置弹出方式

@@ -38,6 +38,7 @@ class FolderNameTableViewCell: UITableViewCell {
         ])
         
         // 设置文件夹名字
+        folderName.delegate = self
         folderName.backgroundColor = .systemGray5
         folderName.applyCornerRadius()
         folderName.textAlignment = .center
@@ -80,4 +81,29 @@ class FolderNameTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+}
+
+
+//MARK: - UITextFieldDelegate
+
+extension FolderNameTableViewCell: UITextFieldDelegate {
+    
+    // 文本编辑时，实时保存
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        if let text = textField.text {
+            folderIconData.name = text
+        }
+    }
+
+    // 文本编辑结束时，按下回车，保存并关闭键盘
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        // 读取文本字段的内容
+        if let text = textField.text {
+            folderIconData.name = text
+        }
+        // 关闭键盘
+        textField.resignFirstResponder()
+        return true
+    }
+    
 }
