@@ -9,42 +9,58 @@ import UIKit
 
 class FolderIcon: UIView {
     
-    private let icon: String
-    private let color: String
-    let diameter: Double
+    let folderIconData = FolderIconData.shared
     
-    init(icon: String, color: String, diameter: Double) {
-        self.icon = icon
-        self.color = color
-        self.diameter = diameter
-        super.init(frame: .zero)
+    private let iconImage = UIImageView()
+    private let circleView = UIView()
+    
+    /// Icon 背景圆形直径
+    var diameter: Double = 50
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupFolderIconData()
         setupView()
     }
     
+    init(diameter: Double) {
+        self.diameter = diameter
+        super.init(frame: .zero)
+        setupFolderIconData()
+        setupView()
+    }
+    
+    /// 更新视图和数据
+    func setupFolderIconData() {
+        // 更改圆形背景颜色
+        circleView.backgroundColor = UIColor.colorForHex(folderIconData.color)
+        circleView.applyShadow(color: UIColor.colorForHex(folderIconData.color), radius: 10)
+        // 更改图片颜色
+        iconImage.image = UIImage(systemName: folderIconData.icon)
+    }
+    
     private func setupView() {
-        let circle = UIView(frame: .zero)
-        circle.backgroundColor = UIColor.colorForHex(color)
-        circle.applyCornerRadius(cornerRadius: diameter / 2)
-        circle.applyShadow(color: UIColor.colorForHex(color), radius: 10)
-        circle.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(circle)
+        // 配置颜色
+        circleView.applyCornerRadius(cornerRadius: diameter / 2)
+        circleView.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(circleView)
         NSLayoutConstraint.activate([
-            circle.widthAnchor.constraint(equalToConstant: diameter),
-            circle.heightAnchor.constraint(equalToConstant: diameter),
-            circle.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            circle.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            circleView.widthAnchor.constraint(equalToConstant: diameter),
+            circleView.heightAnchor.constraint(equalToConstant: diameter),
+            circleView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            circleView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
         ])
         
-        let icon = UIImageView(image: UIImage(systemName: icon))
-        icon.tintColor = .white
-        icon.contentMode = .scaleAspectFit
-        icon.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(icon)
+        // 配置 Icon
+        iconImage.tintColor = .white
+        iconImage.contentMode = .scaleAspectFit
+        iconImage.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(iconImage)
         NSLayoutConstraint.activate([
-            icon.widthAnchor.constraint(equalToConstant: diameter / 2),
-            icon.heightAnchor.constraint(equalToConstant: diameter / 2),
-            icon.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            icon.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            iconImage.widthAnchor.constraint(equalToConstant: diameter / 2),
+            iconImage.heightAnchor.constraint(equalToConstant: diameter / 2),
+            iconImage.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            iconImage.centerYAnchor.constraint(equalTo: self.centerYAnchor),
         ])
     }
     

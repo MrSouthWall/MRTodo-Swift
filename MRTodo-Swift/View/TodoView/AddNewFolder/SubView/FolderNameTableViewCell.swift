@@ -9,19 +9,10 @@ import UIKit
 
 class FolderNameTableViewCell: UITableViewCell {
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
+    let folderIconData = FolderIconData.shared
     
-    var icon: String = "list.bullet"
-    var color: String = "#2D91F5"
+    var folderIcon = FolderIcon()
+    let folderName = UITextField()
     
     // 覆盖默认的初始化方法，提供默认值
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -29,12 +20,15 @@ class FolderNameTableViewCell: UITableViewCell {
         
         self.selectionStyle = .none
         setupFolderNameCell()
+        
+        // 添加通知监听，当 .folderIconDataDidChange 通知触发时，执行 reloadView 函数
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadView), name: .folderIconDataDidChange, object: nil)
     }
     
     /// 设置视图
     private func setupFolderNameCell() {
         // 设置文件夹 Icon
-        let folderIcon = FolderIcon(icon: icon, color: color, diameter: 100)
+        folderIcon = FolderIcon(diameter: 100)
         self.contentView.addSubview(folderIcon)
         folderIcon.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -44,7 +38,6 @@ class FolderNameTableViewCell: UITableViewCell {
         ])
         
         // 设置文件夹名字
-        let folderName = UITextField(frame: .zero)
         folderName.backgroundColor = .systemGray5
         folderName.applyCornerRadius()
         folderName.textAlignment = .center
@@ -65,6 +58,22 @@ class FolderNameTableViewCell: UITableViewCell {
             folderName.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 20),
             folderName.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -20),
         ])
+    }
+    
+    /// 更新数据
+    @objc func reloadView() {
+        folderIcon.setupFolderIconData()
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // Initialization code
+    }
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+
+        // Configure the view for the selected state
     }
     
     required init?(coder: NSCoder) {

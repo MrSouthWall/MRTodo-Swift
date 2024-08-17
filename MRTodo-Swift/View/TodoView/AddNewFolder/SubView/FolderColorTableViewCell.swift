@@ -11,6 +11,9 @@ private let reuseIdentifierCell = "ColorCell"
 
 class FolderColorTableViewCell: UITableViewCell {
     
+    // 获取数据
+    let folderIconData = FolderIconData.shared
+    
     private let colorArray: [String] = [
         "#2D91F5", "#FF3B31", "#FF9403", "#FFCC02", "#1CC65A", "#51A9F3", "#007AFF",
         "#5756D5", "#EA426A", "#C177DC", "#9D8564", "#5B676F", "#D9A5A0",
@@ -97,6 +100,8 @@ extension FolderColorTableViewCell: UICollectionViewDelegate {
     
     /// 点击 Cell 执行
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // 给数据赋值
+        folderIconData.color = colorArray[indexPath.row]
         print("用户选择了：\(colorArray[indexPath.row]) 颜色")
     }
     
