@@ -25,6 +25,11 @@ class FolderNameTableViewCell: UITableViewCell {
         NotificationCenter.default.addObserver(self, selector: #selector(reloadView), name: .folderIconDataDidChange, object: nil)
     }
     
+    // 单对象被释放时，移除观察者，以避免潜在的内存泄漏问题
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .folderIconDataDidChange, object: nil)
+    }
+    
     /// 设置视图
     private func setupFolderNameCell() {
         // 设置文件夹 Icon

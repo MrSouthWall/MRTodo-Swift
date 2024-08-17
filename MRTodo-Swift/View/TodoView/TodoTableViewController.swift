@@ -43,8 +43,16 @@ class TodoTableViewController: UITableViewController {
         
         // 设置导航栏
         self.navigationItem.title = "待办事项"
-        
-        // 从 CoreData 取出数据
+
+        fetchRequestData()
+        // 设置视图
+        setupTableView()
+        setupTableHeaderView()
+        setupAddNewTodoButton()
+    }
+    
+    /// 从 CoreData 取出数据
+    private func fetchRequestData() {
         let context = coreDataManager.context
         let request = Folder.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(key: "orderId", ascending: true)]
@@ -53,11 +61,6 @@ class TodoTableViewController: UITableViewController {
         } else {
             print("从 CoreData 取出文件夹数据失败！")
         }
-        
-        // 设置视图
-        setupTableView()
-        setupTableHeaderView()
-        setupAddNewTodoButton()
     }
     
     /// 设置 Todo 文件夹列表 TableView
@@ -186,8 +189,13 @@ class TodoTableViewController: UITableViewController {
         folderIconData.resetToDefault()
         // 创建要弹出的视图控制器
         let addNewFolderTableViewController = AddNewFolderTableViewController(style: .insetGrouped)
-        addNewFolderTableViewController.onSaveData = { [weak self] in
-            self?.tableView.reloadData()
+        // 一个闭包，用于刷新视图
+        addNewFolderTableViewController.updateView = { [weak self] in
+            self?.fetchRequestData()
+            // 两种刷新视图的方式，第一种是在最后插入一行
+            self?.tableView.insertRows(at: [IndexPath(row: (self?.folderData.count)! - 1, section: 0)], with: .automatic)
+            // 第二种是直接整个视图刷新，为了节省性能，我们选择第一种方式
+            // self?.tableView.reloadData()
         }
         // 创建导航栏
         let addNewFolderTableNavigationController = UINavigationController(rootViewController: addNewFolderTableViewController)
@@ -211,15 +219,15 @@ class TodoTableViewController: UITableViewController {
         if editingStyle == .delete {
             // Delete the row from the data source
             
-            let deleteItem = folderData[indexPath.row] // 取出要删除的项目
-            // 先删除内存中的数据，再删除 CoreData 中的数据
+            // 先删除 CoreData 中的数据，再删除内存中的数据
+            // 因为我们是从内存中取出对象，如果先删内存，那么就没有办法告诉 CoreData 删除哪个对象了
+            coreDataManager.context.delete(folderData[indexPath.row])
             folderData.remove(at: indexPath.row)
-            coreDataManager.context.delete(deleteItem)
-            // 最后从表格视图中删除行
+            // 最后从表格视图中删除行，更新 UI
             tableView.deleteRows(at: [indexPath], with: .fade)
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+        }
     }
     
     // 提供排序功能
