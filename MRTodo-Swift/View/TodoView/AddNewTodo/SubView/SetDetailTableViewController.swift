@@ -1,73 +1,45 @@
 //
-//  TodoItemTableViewController.swift
+//  SetDetailTableViewController.swift
 //  MRTodo-Swift
 //
-//  Created by 南墙先生 on 2024/8/10.
+//  Created by 南墙先生 on 2024/8/18.
 //
 
 import UIKit
 
-class TodoItemTableViewController: UITableViewController {
-    
-    private let coreDataManager = MRCoreDataManager.shared
-    private var todoData: [Todo] = []
-    
-    var currentFolder = Folder()
+class SetDetailTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Uncomment the following line to preserve selection between presentations
-         self.clearsSelectionOnViewWillAppear = false
+        // self.clearsSelectionOnViewWillAppear = false
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        self.navigationItem.rightBarButtonItem = self.editButtonItem
-        
-        // 设置导航栏
-        self.navigationItem.title = currentFolder.name
-        self.navigationController?.navigationBar.prefersLargeTitles = true
-        
-        // 把 Folder 关联的 Todo 存进数组内
-        for todo in currentFolder.todos! {
-            todoData.append(todo as! Todo)
-        }
-        
-        setupTableView()
-    }
-    
-    /// 设置 Todo 文件夹列表 TableView
-    private func setupTableView() {
-        self.tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: "cell")
+        // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 1
+        return 0
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return todoData.count
+        return 0
     }
 
-    
+    /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TodoItemTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
 
         // Configure the cell...
 
-        var content = cell.defaultContentConfiguration()
-        content.image = UIImage(systemName: todoData[indexPath.row].isDone ? "circle" : "checkmark.circle")
-        content.text = todoData[indexPath.row].title
-        content.secondaryText = todoData[indexPath.row].note
-        content.secondaryTextProperties.color = .gray
-        cell.contentConfiguration = content
-
         return cell
     }
-    
+    */
 
     /*
     // Override to support conditional editing of the table view.
@@ -103,16 +75,7 @@ class TodoItemTableViewController: UITableViewController {
         return true
     }
     */
-    
-    
-    // MARK: - UITableViewDelegate
-    
-    /// 行高
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
-    }
 
-    
     /*
     // MARK: - Navigation
 

@@ -1,43 +1,43 @@
 //
-//  TodoItemTableViewController.swift
+//  SelectFolderTableViewController.swift
 //  MRTodo-Swift
 //
-//  Created by 南墙先生 on 2024/8/10.
+//  Created by 南墙先生 on 2024/8/18.
 //
 
 import UIKit
 
-class TodoItemTableViewController: UITableViewController {
+private let reuseIdentifier = "Cell"
+
+class SelectFolderTableViewController: UITableViewController {
     
     private let coreDataManager = MRCoreDataManager.shared
-    private var todoData: [Todo] = []
+    private let newTodoData = NewTodoData.shared
+    private var folderData: [Folder] = []
     
-    var currentFolder = Folder()
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Uncomment the following line to preserve selection between presentations
-         self.clearsSelectionOnViewWillAppear = false
+        // self.clearsSelectionOnViewWillAppear = false
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        self.navigationItem.rightBarButtonItem = self.editButtonItem
+        // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
-        // 设置导航栏
-        self.navigationItem.title = currentFolder.name
-        self.navigationController?.navigationBar.prefersLargeTitles = true
+        self.navigationItem.title = "待办文件夹"
         
-        // 把 Folder 关联的 Todo 存进数组内
-        for todo in currentFolder.todos! {
-            todoData.append(todo as! Todo)
+        let context = coreDataManager.context
+        let request = Folder.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(key: "orderId", ascending: true)]
+        if let folderData = try? context.fetch(request) {
+            self.folderData = folderData
+        } else {
+            print("从 CoreData 取出文件夹数据失败！")
         }
         
-        setupTableView()
-    }
-    
-    /// 设置 Todo 文件夹列表 TableView
-    private func setupTableView() {
-        self.tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: "cell")
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        print(folderData)
+
     }
 
     // MARK: - Table view data source
@@ -49,22 +49,18 @@ class TodoItemTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return todoData.count
+        return folderData.count
     }
-
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TodoItemTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
 
         // Configure the cell...
-
         var content = cell.defaultContentConfiguration()
-        content.image = UIImage(systemName: todoData[indexPath.row].isDone ? "circle" : "checkmark.circle")
-        content.text = todoData[indexPath.row].title
-        content.secondaryText = todoData[indexPath.row].note
-        content.secondaryTextProperties.color = .gray
+        let icon = folderData[indexPath.row].icon!
+        content.image = UIImage(systemName: icon)
+        content.text = folderData[indexPath.row].name!
         cell.contentConfiguration = content
-
         return cell
     }
     
@@ -105,14 +101,39 @@ class TodoItemTableViewController: UITableViewController {
     */
     
     
-    // MARK: - UITableViewDelegate
+    // MARK: - Table view Degelate
     
-    /// 行高
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
+    /// 设置 Header 视图
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView(frame: tableView.rectForHeader(inSection: 0))
+        // 我的列表标题
+        let titleLabel = UILabel(frame: headerView.bounds)
+        titleLabel.text = "iCloud"
+        titleLabel.textColor = .label
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 24)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        headerView.addSubview(titleLabel)
+        NSLayoutConstraint.activate([
+            titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 20),
+            titleLabel.heightAnchor.constraint(equalToConstant: headerView.bounds.height),
+        ])
+        return headerView
     }
-
     
+    /// 设置 Header 行高
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40
+    }
+    
+    /// 点击 Cell 执行函数，将文件夹赋值给新待办的关联文件夹
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // 设定文件夹为用户当前选择
+        newTodoData.folder = folderData[indexPath.row]
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+
     /*
     // MARK: - Navigation
 

@@ -7,6 +7,8 @@
 
 import UIKit
 
+private let reuseIdentifier = "Cell"
+
 class TodoTableViewController: UITableViewController {
     
     /**
@@ -19,6 +21,7 @@ class TodoTableViewController: UITableViewController {
     
     private let coreDataManager = MRCoreDataManager.shared
     private let folderIconData = FolderIconData.shared
+    private let newTodoData = NewTodoData.shared
     
     /// Todo 列表文件夹数据
     private var folderData: [Folder] = []
@@ -65,7 +68,7 @@ class TodoTableViewController: UITableViewController {
     
     /// 设置 Todo 文件夹列表 TableView
     private func setupTableView() {
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
     }
     
     /// 设置 Todo 文件夹列表 HeaderView
@@ -108,8 +111,10 @@ class TodoTableViewController: UITableViewController {
     
     /// 弹出添加新 Todo 视图
     @objc private func popupToAddNewTodo() {
+        // 重置临时 Todo 的数据
+        newTodoData.resetToDefault()
         // 创建要弹出的视图控制器
-        let addNewTodoViewController = AddNewTodoViewController()
+        let addNewTodoViewController = AddNewTodoTableViewController(style: .insetGrouped)
         // 创建导航栏
         let addNewTodoNavigationController = UINavigationController(rootViewController: addNewTodoViewController)
         // 设置弹出方式
@@ -135,7 +140,7 @@ class TodoTableViewController: UITableViewController {
     
     /// 设置 Todo 文件夹列表的 Cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
 
         // Configure the cell...
         folderData[indexPath.row].orderId = Int16(indexPath.row)
@@ -255,9 +260,10 @@ class TodoTableViewController: UITableViewController {
         return 40
     }
     
-    /// 选中行
+    /// 点击进入文件夹内的 Todo 列表
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let todoTableViewController = TodoItemTableViewController(style: .plain)
+        todoTableViewController.currentFolder = folderData[indexPath.row]
         self.navigationController?.pushViewController(todoTableViewController, animated: true)
     }
     
