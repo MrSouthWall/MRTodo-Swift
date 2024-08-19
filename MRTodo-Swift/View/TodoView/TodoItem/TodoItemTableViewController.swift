@@ -12,7 +12,7 @@ class TodoItemTableViewController: UITableViewController {
     private let coreDataManager = MRCoreDataManager.shared
     private var todoData: [Todo] = []
     
-    var currentFolder = Folder()
+    var currentFolder: Folder?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,12 +24,14 @@ class TodoItemTableViewController: UITableViewController {
         self.navigationItem.rightBarButtonItem = self.editButtonItem
         
         // 设置导航栏
-        self.navigationItem.title = currentFolder.name
+        self.navigationItem.title = currentFolder?.name
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
         // 把 Folder 关联的 Todo 存进数组内
-        for todo in currentFolder.todos! {
-            todoData.append(todo as! Todo)
+        if let currentFolder = currentFolder {
+            for todo in currentFolder.todos! {
+                todoData.append(todo as! Todo)
+            }
         }
         
         setupTableView()
