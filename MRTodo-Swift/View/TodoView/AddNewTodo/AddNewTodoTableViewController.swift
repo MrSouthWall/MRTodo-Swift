@@ -16,7 +16,6 @@ class AddNewTodoTableViewController: UITableViewController {
     
     private let coreDataManager = MRCoreDataManager.shared
     private let newTodoData = NewTodoData.shared
-    private let seletedFolder: Folder = Folder()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,23 +68,12 @@ class AddNewTodoTableViewController: UITableViewController {
     @objc private func doneButton() {
         let context = coreDataManager.context
         
-        // 取出 Folder
-        var folder: Folder = Folder()
-        let request = Folder.fetchRequest()
-        request.predicate = NSPredicate(format: "name == %@", "good")
-        if let requestFolder = try? context.fetch(request) {
-            folder = requestFolder.first!
-            print(folder)
-        } else {
-            print("从 CoreData 取出文件夹数据失败！")
-        }
-        
         // 存到 CoreData
         let newTodo = Todo(context: context)
         newTodo.createTime = .now
         newTodo.title = newTodoData.title
         newTodo.note = newTodoData.note
-        newTodo.isDone = newTodo.isDone
+        newTodo.isDone = newTodoData.isDone
         newTodo.folder = newTodoData.folder
         // 保存数据
         coreDataManager.saveContext()
