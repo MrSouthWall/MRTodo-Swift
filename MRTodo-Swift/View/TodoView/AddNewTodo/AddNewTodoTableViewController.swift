@@ -111,10 +111,10 @@ class AddNewTodoTableViewController: UITableViewController {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: infoCell, for: indexPath) as! InfoCell
             // 配置无输入状态下的提示词
-            cell.indexPath = indexPath
-            cell.textView.delegate = self
-            cell.loadData()
-            cell.configurePlaceholder()
+            cell.cellRow = indexPath.row // 传入行数，区分标题和备注
+            cell.textView.delegate = self // 在外部设置代理，主要为了用于刷新行高
+            cell.loadData() // 当视图刷新时重新从临时 newTodoData 中加载数据，并且用于设置占位符
+            cell.updatePlaceholderVisibility() // 刷新占位符
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: detailsCell, for: indexPath) as! DetailsCell
@@ -225,7 +225,8 @@ class InfoCell: UITableViewCell {
     
     private let newTodoData = NewTodoData.shared
     let textView: UITextView = UITextView()
-    var indexPath: IndexPath = IndexPath()
+    let placeholderLabel = UILabel()
+    var cellRow = 0
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -233,8 +234,10 @@ class InfoCell: UITableViewCell {
         self.selectionStyle = .none
 
         setupTextView()
+        setupPlaceholderLabel()
     }
     
+    /// 设置文本输入框
     private func setupTextView() {
         textView.backgroundColor = .clear
         textView.font = UIFont.preferredFont(forTextStyle: .body)
@@ -249,35 +252,47 @@ class InfoCell: UITableViewCell {
         ])
     }
     
+    /// 设置占位符
+    private func setupPlaceholderLabel() {
+        placeholderLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        placeholderLabel.textColor = .gray
+        self.contentView.addSubview(placeholderLabel)
+        placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            placeholderLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 5),
+            placeholderLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -5),
+            placeholderLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 25),
+            placeholderLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -25),
+        ])
+    }
+    
+    /// 用于设置好文件夹和设置好详细信息后，给 TextView 加载临时对象 newTodoData 中的数据，同时赋给占位符字符
     func loadData() {
-        switch indexPath.row {
+        switch cellRow {
         case 0:
             textView.text = newTodoData.title
+            placeholderLabel.text = "标题"
         case 1:
             textView.text = newTodoData.note
+            placeholderLabel.text = "备注"
         default:
             textView.text = "?"
+            placeholderLabel.text = "?"
         }
     }
     
-    /// 设置无输入状态下的 UITextField 提示词
-    func configurePlaceholder() {
-        if textView.text.isEmpty {
-            switch indexPath.row {
-            case 0:
-                textView.text = "标题"
-            case 1:
-                textView.text = "备注"
-            default:
-                textView.text = "未设置提示词"
-            }
-            textView.textColor = .lightGray
+    /// 更新占位符显示
+    func updatePlaceholderVisibility() {
+        if textView.text.isEmpty || textView.text == "" {
+            placeholderLabel.isHidden = false
+        } else {
+            placeholderLabel.isHidden = true
         }
     }
     
     /// 保存文字到内存中的临时 Todo
     func saveText() {
-        switch indexPath.row {
+        switch cellRow {
         case 0:
             newTodoData.title = textView.text
         case 1:
@@ -298,32 +313,14 @@ class InfoCell: UITableViewCell {
 
 extension AddNewTodoTableViewController: UITextViewDelegate {
     
-    /// 当用户开始编辑时，提示此消失
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.textColor == .lightGray {
-            textView.text = ""
-            textView.textColor = .label
-        }
-    }
-    
-    /// 当输入框没有字符时，显示提示词
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if let cell = textView.superview?.superview as? InfoCell {
-            cell.configurePlaceholder()
-        }
-    }
-    
     /// 使 Cell 高度自动随着文本内容的改变而改变
     func textViewDidChange(_ textView: UITextView) {
-        tableView.beginUpdates()
-        tableView.endUpdates()
-    }
-    
-    /// 实时保存到内存中的临时 Todo
-    func textViewDidChangeSelection(_ textView: UITextView) {
         if let cell = textView.superview?.superview as? InfoCell {
+            cell.updatePlaceholderVisibility()
             cell.saveText()
         }
+        tableView.beginUpdates()
+        tableView.endUpdates()
     }
     
 }
