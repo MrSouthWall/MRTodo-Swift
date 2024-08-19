@@ -41,7 +41,7 @@ class AddNewTodoTableViewController: UITableViewController {
     
     /// 更新数据
     @objc func refreshView() {
-//        tableView.reloadData() // 目前有 Bug
+        tableView.reloadData()
     }
     
     /// 设置导航栏
@@ -112,6 +112,7 @@ class AddNewTodoTableViewController: UITableViewController {
             // 配置无输入状态下的提示词
             cell.indexPath = indexPath
             cell.textView.delegate = self
+            cell.loadData()
             cell.configurePlaceholder()
             return cell
         case 1:
@@ -228,6 +229,7 @@ class InfoCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         self.selectionStyle = .none
+
         setupTextView()
     }
     
@@ -245,19 +247,47 @@ class InfoCell: UITableViewCell {
         ])
     }
     
+    func loadData() {
+        switch indexPath.row {
+        case 0:
+            textView.text = newTodoData.title
+        case 1:
+            textView.text = newTodoData.note
+        default:
+            textView.text = "?"
+        }
+    }
+    
     /// 设置无输入状态下的 UITextField 提示词
     func configurePlaceholder() {
         
-        switch indexPath.row {
-        case 0:
-            textView.text = "标题"
-        case 1:
-            textView.text = "备注"
-        default:
-            textView.text = "未设置提示词"
+//        switch indexPath.row {
+//        case 0:
+//            if textView.text.isEmpty {
+//                textView.text = "标题"
+//            }
+//        case 1:
+//            if textView.text.isEmpty {
+//                textView.text = "备注"
+//            }
+//        default:
+//            textView.text = "未设置提示词"
+//        }
+//        if textView.text == "标题" || textView.text == "备注" {
+//            textView.textColor = .lightGray
+//        }
+
+        if textView.text.isEmpty {
+            switch indexPath.row {
+            case 0:
+                textView.text = "标题"
+            case 1:
+                textView.text = "备注"
+            default:
+                textView.text = "未设置提示词"
+            }
+            textView.textColor = .lightGray
         }
-        
-        textView.textColor = .lightGray
     }
     
     /// 保存文字到内存中的临时 Todo
@@ -289,30 +319,29 @@ extension AddNewTodoTableViewController: UITextViewDelegate {
             textView.text = ""
             textView.textColor = .label
         }
-        textView.becomeFirstResponder() //Optional
     }
     
-    // 当输入框没有字符时，显示提示词
+    /// 当输入框没有字符时，显示提示词
     func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.isEmpty || textView.text == "" {
+//        if textView.text.isEmpty || textView.text == "" {
             if let cell = textView.superview?.superview as? InfoCell {
                 cell.configurePlaceholder()
             }
-        }
+//        }
     }
     
-    // 使 Cell 高度自动随着文本内容的改变而改变
+    /// 使 Cell 高度自动随着文本内容的改变而改变
     func textViewDidChange(_ textView: UITextView) {
         tableView.beginUpdates()
         tableView.endUpdates()
     }
     
+    /// 实时保存到内存中的临时 Todo
     func textViewDidChangeSelection(_ textView: UITextView) {
         if let cell = textView.superview?.superview as? InfoCell {
             cell.saveText()
         }
     }
-    
     
 }
 
