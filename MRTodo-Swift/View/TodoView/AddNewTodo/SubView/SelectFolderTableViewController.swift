@@ -61,6 +61,12 @@ class SelectFolderTableViewController: UITableViewController {
         content.image = UIImage(systemName: icon)
         content.text = folderData[indexPath.row].name!
         cell.contentConfiguration = content
+        // Cell 右侧的 CheckMark
+        if newTodoData.folder == folderData[indexPath.row] {
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
+        }
         return cell
     }
     
@@ -130,6 +136,7 @@ class SelectFolderTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // 设定文件夹为用户当前选择
         newTodoData.folder = folderData[indexPath.row]
+        tableView.reloadData() // 刷新视图以更新 Cell 右侧的 CheckMark
         self.navigationController?.popViewController(animated: true)
     }
     
