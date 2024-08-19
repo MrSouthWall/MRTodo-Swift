@@ -66,8 +66,9 @@ class AddNewTodoTableViewController: UITableViewController {
     
     /// 完成按钮执行函数
     @objc private func doneButton() {
-        let context = coreDataManager.context
+        view.endEditing(true) // 关闭键盘
         
+        let context = coreDataManager.context
         // 存到 CoreData
         let newTodo = Todo(context: context)
         newTodo.createTime = .now
@@ -188,14 +189,15 @@ class AddNewTodoTableViewController: UITableViewController {
     
     /// 点击进入文件夹内的 Todo 列表
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath)
         switch indexPath.section {
         case 0:
             break
         case 1:
+            view.endEditing(true) // 关闭键盘
             let setDetailTableViewController = SetDetailTableViewController(style: .insetGrouped)
             self.navigationController?.pushViewController(setDetailTableViewController, animated: true)
         case 2:
+            view.endEditing(true) // 关闭键盘
             let selectFolderTableViewController = SelectFolderTableViewController(style: .plain)
             self.navigationController?.pushViewController(selectFolderTableViewController, animated: true)
         default:
@@ -260,23 +262,6 @@ class InfoCell: UITableViewCell {
     
     /// 设置无输入状态下的 UITextField 提示词
     func configurePlaceholder() {
-        
-//        switch indexPath.row {
-//        case 0:
-//            if textView.text.isEmpty {
-//                textView.text = "标题"
-//            }
-//        case 1:
-//            if textView.text.isEmpty {
-//                textView.text = "备注"
-//            }
-//        default:
-//            textView.text = "未设置提示词"
-//        }
-//        if textView.text == "标题" || textView.text == "备注" {
-//            textView.textColor = .lightGray
-//        }
-
         if textView.text.isEmpty {
             switch indexPath.row {
             case 0:
@@ -323,11 +308,9 @@ extension AddNewTodoTableViewController: UITextViewDelegate {
     
     /// 当输入框没有字符时，显示提示词
     func textViewDidEndEditing(_ textView: UITextView) {
-//        if textView.text.isEmpty || textView.text == "" {
-            if let cell = textView.superview?.superview as? InfoCell {
-                cell.configurePlaceholder()
-            }
-//        }
+        if let cell = textView.superview?.superview as? InfoCell {
+            cell.configurePlaceholder()
+        }
     }
     
     /// 使 Cell 高度自动随着文本内容的改变而改变
@@ -353,7 +336,6 @@ class DetailsCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         
-        self.selectionStyle = .none
         self.accessoryType = .disclosureIndicator
     }
     

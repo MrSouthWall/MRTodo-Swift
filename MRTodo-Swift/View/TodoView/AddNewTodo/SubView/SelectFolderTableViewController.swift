@@ -36,7 +36,6 @@ class SelectFolderTableViewController: UITableViewController {
         }
         
         self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
-        print(folderData)
 
     }
 
