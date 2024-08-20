@@ -61,7 +61,7 @@ class TodoItemTableViewController: UITableViewController {
         // Configure the cell...
 
         var content = cell.defaultContentConfiguration()
-        content.image = UIImage(systemName: todoData[indexPath.row].isDone ? "circle" : "checkmark.circle")
+        content.image = UIImage(systemName: todoData[indexPath.row].isDone ? "checkmark.circle" : "circle")
         content.text = todoData[indexPath.row].title
         content.secondaryText = todoData[indexPath.row].note
         content.secondaryTextProperties.color = .gray
