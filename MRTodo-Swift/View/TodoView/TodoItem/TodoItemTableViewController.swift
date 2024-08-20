@@ -18,7 +18,7 @@ class TodoItemTableViewController: UITableViewController {
         super.viewDidLoad()
 
         // Uncomment the following line to preserve selection between presentations
-         self.clearsSelectionOnViewWillAppear = false
+        self.clearsSelectionOnViewWillAppear = false
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         self.navigationItem.rightBarButtonItem = self.editButtonItem
@@ -34,13 +34,10 @@ class TodoItemTableViewController: UITableViewController {
             }
         }
         
-        setupTableView()
+        self.tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: "cell")
+        
     }
     
-    /// 设置 Todo 文件夹列表 TableView
-    private func setupTableView() {
-        self.tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: "cell")
-    }
 
     // MARK: - Table view data source
 
@@ -60,13 +57,16 @@ class TodoItemTableViewController: UITableViewController {
 
         // Configure the cell...
 
-        var content = cell.defaultContentConfiguration()
-        content.image = UIImage(systemName: todoData[indexPath.row].isDone ? "checkmark.circle" : "circle")
-        content.text = todoData[indexPath.row].title
-        content.secondaryText = todoData[indexPath.row].note
-        content.secondaryTextProperties.color = .gray
-        cell.contentConfiguration = content
-
+        let currentCellTodoData = todoData[indexPath.row]
+        let isDone = currentCellTodoData.isDone
+        let title = currentCellTodoData.title!
+        let note = currentCellTodoData.note ?? ""
+        cell.configure(doneIcon: isDone, todoTitle: title, todoNote: note)
+        // 传递闭包，刷新视图
+        cell.buttonAction = {
+            currentCellTodoData.isDone.toggle()
+            self.tableView.reloadRows(at: [indexPath], with: .automatic)
+        }
         return cell
     }
     
@@ -78,8 +78,8 @@ class TodoItemTableViewController: UITableViewController {
         return true
     }
     */
-
-    /*
+    
+    
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
@@ -89,14 +89,12 @@ class TodoItemTableViewController: UITableViewController {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
     }
-    */
-
-    /*
+    
     // Override to support rearranging the table view.
     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
 
     }
-    */
+    
 
     /*
     // Override to support conditional rearranging of the table view.

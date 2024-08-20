@@ -9,17 +9,11 @@ import UIKit
 
 class TodoItemTableViewCell: UITableViewCell {
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    /// 按钮闭包
+    var buttonAction: (() -> Void) = {}
     
     /// 勾选 Icon
-    private let checkButton: UIButton = {
+    let checkButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -44,9 +38,11 @@ class TodoItemTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        self.addSubview(checkButton)
-        self.addSubview(todoTitle)
-        self.addSubview(todoNote)
+        self.selectionStyle = .none
+        
+        self.contentView.addSubview(checkButton)
+        self.contentView.addSubview(todoTitle)
+        self.contentView.addSubview(todoNote)
         
         NSLayoutConstraint.activate([
             checkButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
@@ -62,11 +58,23 @@ class TodoItemTableViewCell: UITableViewCell {
         ])
     }
     
+    /// 配置 Cell 信息
     func configure(doneIcon: Bool, todoTitle: String, todoNote: String) {
-        self.checkButton.setImage(UIImage(systemName: doneIcon ? "circle" : "checkmark.circle"), for: .normal)
-        self.checkButton.setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(pointSize: 22, weight: .regular, scale: .default), forImageIn: .normal)
+        self.checkButton.setImage(UIImage(systemName: doneIcon ? "checkmark.circle" : "circle"), for: .normal)
+        self.checkButton.setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(pointSize: 20, weight: .regular, scale: .default), forImageIn: .normal)
+        self.checkButton.addTarget(self, action: #selector(checkDone), for: .touchUpInside)
         self.todoTitle.text = todoTitle
         self.todoNote.text = todoNote
+    }
+    
+    /// 按下 CheckButton 后执行
+    @objc private func checkDone() {
+        buttonAction()
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // Initialization code
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -75,4 +83,8 @@ class TodoItemTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
 
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
 }
