@@ -67,6 +67,19 @@ class TodoItemTableViewCell: UITableViewCell {
         self.todoNote.text = todoNote
     }
     
+    /// 编辑时让 Check 图标消失，结束编辑再出现
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        
+        UIView.animate(withDuration: 0.5) {
+            if self.isEditing {
+                self.checkButton.alpha = 0
+            } else {
+                self.checkButton.alpha = 1
+            }
+        }
+    }
+    
     /// 按下 CheckButton 后执行
     @objc private func checkDone() {
         buttonAction()
