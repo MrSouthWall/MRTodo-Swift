@@ -7,6 +7,8 @@
 
 import UIKit
 
+private let reuseIdentifier = "Cell"
+
 class TodoFolderHeaderCollectionView: UICollectionView {
     
     /// 初始化
@@ -26,9 +28,7 @@ class TodoFolderHeaderCollectionView: UICollectionView {
     private func setupCollectionView() {
         self.backgroundColor = .systemGroupedBackground
         // 设置数据源和委托
-        self.dataSource = self
-        self.delegate = self
-        self.register(TodoFolderHeaderCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        self.register(TodoFolderHeaderCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
     }
     
     /// 设置 Cell 的背景颜色
@@ -54,7 +54,7 @@ class TodoFolderHeaderCollectionView: UICollectionView {
 
 // MARK: - UICollectionViewDataSource
 
-extension TodoFolderHeaderCollectionView: UICollectionViewDataSource {
+extension TodoTableViewController: UICollectionViewDataSource {
     /// CollectionView 标题数量
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 4
@@ -62,16 +62,10 @@ extension TodoFolderHeaderCollectionView: UICollectionViewDataSource {
     
     /// 设置 Cell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! TodoFolderHeaderCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! TodoFolderHeaderCollectionViewCell
         
-        self.setbackgroundColor(cell)
-        registerForTraitChanges([UITraitUserInterfaceStyle.self], handler: { (self: Self, previousTraitCollection: UITraitCollection) in
-            // 重新调用，以响应深色模式的变化
-            self.setbackgroundColor(cell)
-        })
-
+        cell.backgroundColor = .cellBackground
         cell.applyCornerRadius()
-        cell.applyShadow()
         
         let folderData: [(icon: String, name: String, count: String)] = [
             ("star.circle.fill", "今天", "0"),
@@ -90,6 +84,30 @@ extension TodoFolderHeaderCollectionView: UICollectionViewDataSource {
 
 // MARK: - UICollectionViewDelegate
 
-extension TodoFolderHeaderCollectionView: UICollectionViewDelegate {
+extension TodoTableViewController: UICollectionViewDelegate {
+    
+    /// 点击 Cell 跳转到 Todo 列表页
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 0:
+            let todoTableViewController = TodoItemTableViewController(style: .plain)
+            todoTableViewController.todoFilteringMode = .today
+            self.navigationController?.pushViewController(todoTableViewController, animated: true)
+        case 1:
+            let todoTableViewController = TodoItemTableViewController(style: .plain)
+            todoTableViewController.todoFilteringMode = .timeline
+            self.navigationController?.pushViewController(todoTableViewController, animated: true)
+        case 2:
+            let todoTableViewController = TodoItemTableViewController(style: .plain)
+            todoTableViewController.todoFilteringMode = .all
+            self.navigationController?.pushViewController(todoTableViewController, animated: true)
+        case 3:
+            let todoTableViewController = TodoItemTableViewController(style: .plain)
+            todoTableViewController.todoFilteringMode = .flag
+            self.navigationController?.pushViewController(todoTableViewController, animated: true)
+        default:
+            break
+        }
+    }
     
 }

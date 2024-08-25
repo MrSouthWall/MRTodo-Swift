@@ -7,12 +7,25 @@
 
 import UIKit
 
+/// Todo 列表页的筛选模式，特制的模式有特制的 UI
+enum TodoFilteringMode {
+    case today
+    case timeline
+    case all
+    case flag
+    case folder
+}
+
+private let reuseIdentifier = "Cell"
+
 class TodoItemTableViewController: UITableViewController {
+    
+    /// Todo 列表的筛选模式
+    var todoFilteringMode: TodoFilteringMode = .all
+    var currentFolder: Folder?
     
     private let coreDataManager = MRCoreDataManager.shared
     private var todoData: [Todo] = []
-    
-    var currentFolder: Folder?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,17 +36,75 @@ class TodoItemTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         self.navigationItem.rightBarButtonItem = self.editButtonItem
         
+        switch todoFilteringMode {
+        case .today:
+            self.navigationItem.title = "今天"
+            requestTodayTodoData()
+        case .timeline:
+            self.navigationItem.title = "时间轴"
+            print("timeline")
+        case .all:
+            self.navigationItem.title = "所有"
+            requestAllTodoData()
+        case .flag:
+            self.navigationItem.title = "旗帜"
+            requestFlagTodoData()
+        case .folder:
+            self.navigationItem.title = currentFolder?.name
+            requestTodoDataFilteredByFolder()
+        }
         // 设置导航栏
-        self.navigationItem.title = currentFolder?.name
         self.navigationController?.navigationBar.prefersLargeTitles = true
-        
-        fetchRequestData()
-        self.tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: "cell")
-        
+        self.tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
     }
     
-    /// 从 CoreData 取出数据
-    private func fetchRequestData() {
+    /// 获取今天的 Todo 列表
+    private func requestTodayTodoData() {
+        // 筛选今天的数据
+        let context = coreDataManager.context
+        let request = Todo.fetchRequest()
+        request.predicate = NSPredicate(format: "startTime == %@", Date.now as CVarArg)
+        request.sortDescriptors = [NSSortDescriptor(key: "endTime", ascending: true), NSSortDescriptor(key: "startTime", ascending: true)]
+        if let todoData = try? context.fetch(request) {
+            self.todoData = todoData
+        } else {
+            print("从 CoreData 取出文件夹数据失败！")
+        }
+    }
+    
+    /// 获取时间线的 Todo 列表
+    private func requestTimelineTodoData() {
+        // 筛选时间线的 Todo 数据
+    }
+    
+    /// 获取所有的 Todo 列表
+    private func requestAllTodoData() {
+        let context = coreDataManager.context
+        let request = Todo.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(key: "createTime", ascending: true), NSSortDescriptor(key: "orderId", ascending: true)]
+        if let todoData = try? context.fetch(request) {
+            self.todoData = todoData
+        } else {
+            print("从 CoreData 取出文件夹数据失败！")
+        }
+    }
+    
+    /// 获取旗帜的 Todo 列表
+    private func requestFlagTodoData() {
+        let context = coreDataManager.context
+        let request = Todo.fetchRequest()
+        request.predicate = NSPredicate(format: "flag == true")
+        request.sortDescriptors = [NSSortDescriptor(key: "createTime", ascending: true), NSSortDescriptor(key: "orderId", ascending: true)]
+        if let todoData = try? context.fetch(request) {
+            self.todoData = todoData
+            print(todoData)
+        } else {
+            print("从 CoreData 取出文件夹数据失败！")
+        }
+    }
+    
+    /// 获取选定文件夹的 Todo 列表
+    private func requestTodoDataFilteredByFolder() {
         let context = coreDataManager.context
         let request = Todo.fetchRequest()
         request.predicate = NSPredicate(format: "folder.name == %@", currentFolder?.name ?? "")
@@ -60,7 +131,7 @@ class TodoItemTableViewController: UITableViewController {
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TodoItemTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! TodoItemTableViewCell
 
         // Configure the cell...
         todoData[indexPath.row].orderId = Int16(indexPath.row)

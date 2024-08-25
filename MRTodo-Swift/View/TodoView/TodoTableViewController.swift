@@ -81,6 +81,8 @@ class TodoTableViewController: UITableViewController {
         layout.minimumInteritemSpacing = 20
         layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
         let todoFolderHeaderCollectionView = TodoFolderHeaderCollectionView(frame: CGRect(x: 0, y: 0, width: width, height: height), collectionViewLayout: layout)
+        todoFolderHeaderCollectionView.dataSource = self
+        todoFolderHeaderCollectionView.delegate = self
         self.tableView.tableHeaderView = todoFolderHeaderCollectionView
     }
     
@@ -263,6 +265,7 @@ class TodoTableViewController: UITableViewController {
     /// 点击进入文件夹内的 Todo 列表
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let todoTableViewController = TodoItemTableViewController(style: .plain)
+        todoTableViewController.todoFilteringMode = .folder
         todoTableViewController.currentFolder = folderData[indexPath.row]
         self.navigationController?.pushViewController(todoTableViewController, animated: true)
     }

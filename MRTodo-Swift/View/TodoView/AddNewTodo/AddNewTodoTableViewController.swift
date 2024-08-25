@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 // reuseIdentifier 重用标识符
 private let infoCell = "InfoCell"
@@ -67,17 +68,7 @@ class AddNewTodoTableViewController: UITableViewController {
     /// 完成按钮执行函数
     @objc private func doneButton() {
         view.endEditing(true) // 关闭键盘
-        
-        let context = coreDataManager.context
-        // 存到 CoreData
-        let newTodo = Todo(context: context)
-        newTodo.createTime = .now
-        newTodo.title = newTodoData.title
-        newTodo.note = newTodoData.note
-        newTodo.isDone = newTodoData.isDone
-        newTodo.folder = newTodoData.folder
-        // 保存数据
-        coreDataManager.saveContext()
+        newTodoData.saveToCoreData()
         self.dismiss(animated: true)
     }
     
@@ -194,8 +185,11 @@ class AddNewTodoTableViewController: UITableViewController {
             break
         case 1:
             view.endEditing(true) // 关闭键盘
-            let setDetailTableViewController = SetDetailTableViewController(style: .insetGrouped)
-            self.navigationController?.pushViewController(setDetailTableViewController, animated: true)
+            let setDetailView = SetDetailView()
+            let hostingController = UIHostingController(rootView: setDetailView)
+            hostingController.navigationItem.title = "详情信息"
+            self.navigationController?.pushViewController(hostingController, animated: true)
+
         case 2:
             view.endEditing(true) // 关闭键盘
             let selectFolderTableViewController = SelectFolderTableViewController(style: .plain)
