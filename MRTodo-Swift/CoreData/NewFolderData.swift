@@ -1,5 +1,5 @@
 //
-//  FolderIconData.swift
+//  NewFolderData.swift
 //  MRTodo-Swift
 //
 //  Created by 南墙先生 on 2024/8/17.
@@ -12,10 +12,10 @@ private let defaultIcon = "list.bullet"
 private let defaultColor = "#2D91F5"
 
 /// 新建文件夹页的单例模式数据，用于同步用户选择信息，并添加到 CoreData
-class FolderIconData {
+class NewFolderData {
     
     // 单例模式必备
-    static let shared = FolderIconData(name: defaultName, icon: defaultIcon, color: defaultColor)
+    static let shared = NewFolderData(name: defaultName, icon: defaultIcon, color: defaultColor)
     
     private let coreDataManager = MRCoreDataManager.shared
     

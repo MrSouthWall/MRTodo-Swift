@@ -9,13 +9,15 @@ import UIKit
 
 class FolderIcon: UIView {
     
-    let folderIconData = FolderIconData.shared
+    let newFolderData = NewFolderData.shared
     
     private let iconImage = UIImageView()
     private let circleView = UIView()
     
     /// Icon 背景圆形直径
     var diameter: Double = 50
+    var iconName: String = "list.bullet"
+    var hexColor: String = "#2D91F5"
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -23,8 +25,10 @@ class FolderIcon: UIView {
         setupView()
     }
     
-    init(diameter: Double) {
+    init(diameter: Double, iconName: String, hexColor: String) {
         self.diameter = diameter
+        self.iconName = iconName
+        self.hexColor = hexColor
         super.init(frame: .zero)
         setupFolderIconData()
         setupView()
@@ -33,10 +37,10 @@ class FolderIcon: UIView {
     /// 更新视图和数据
     func setupFolderIconData() {
         // 更改圆形背景颜色
-        circleView.backgroundColor = UIColor.colorForHex(folderIconData.color)
-        circleView.applyShadow(color: UIColor.colorForHex(folderIconData.color), radius: 10)
+        circleView.backgroundColor = UIColor.colorForHex(hexColor)
+        circleView.applyShadow(color: UIColor.colorForHex(hexColor), radius: 10)
         // 更改图片颜色
-        iconImage.image = UIImage(systemName: folderIconData.icon)
+        iconImage.image = UIImage(systemName: iconName)
     }
     
     private func setupView() {
@@ -77,4 +81,16 @@ class FolderIcon: UIView {
     }
     */
 
+}
+
+
+extension FolderIcon {
+    /// 把 UIView 视图转换成 UIImage
+    func asImage() -> UIImage {
+        self.layoutIfNeeded()
+        let renderer = UIGraphicsImageRenderer(bounds: self.bounds)
+        return renderer.image { context in
+            self.layer.render(in: context.cgContext)
+        }
+    }
 }

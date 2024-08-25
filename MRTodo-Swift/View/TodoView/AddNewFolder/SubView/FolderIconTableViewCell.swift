@@ -12,7 +12,7 @@ private let reuseIdentifierCell = "IconCell"
 class FolderIconTableViewCell: UITableViewCell {
     
     // 获取数据
-    let folderIconData = FolderIconData.shared
+    private let newFolderData = NewFolderData.shared
     
     private let iconArray: [String] = [
         "face.smiling", "list.bullet", "bookmark.fill", "mappin", "gift.fill", "birthday.cake.fill", "square.and.arrow.up.fill",
@@ -111,7 +111,7 @@ extension FolderIconTableViewCell: UICollectionViewDelegate {
     /// 点击 Cell 执行
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // 给数据赋值
-        folderIconData.icon = iconArray[indexPath.row]
+        newFolderData.icon = iconArray[indexPath.row]
         print("用户选择了：\(iconArray[indexPath.row]) 图标")
     }
     

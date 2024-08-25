@@ -20,7 +20,7 @@ class TodoTableViewController: UITableViewController {
     private let screenSize: CGRect
     
     private let coreDataManager = MRCoreDataManager.shared
-    private let folderIconData = FolderIconData.shared
+    private let folderIconData = NewFolderData.shared
     private let newTodoData = NewTodoData.shared
     
     /// Todo 列表文件夹数据
@@ -149,8 +149,12 @@ class TodoTableViewController: UITableViewController {
         coreDataManager.saveContext()
         
         var content = cell.defaultContentConfiguration()
-        let icon = folderData[indexPath.row].icon!
-        content.image = UIImage(systemName: icon)
+//        let icon = folderData[indexPath.row].icon!
+        let folderIcon = FolderIcon(diameter: 13, iconName: folderData[indexPath.row].icon!, hexColor: folderData[indexPath.row].color!).asImage()
+//        print(folderData[indexPath.row].icon)
+//        print(folderData[indexPath.row].color)
+        print(folderIcon)
+        content.image = folderIcon
         content.text = folderData[indexPath.row].name!
         cell.contentConfiguration = content
         cell.accessoryType = .disclosureIndicator

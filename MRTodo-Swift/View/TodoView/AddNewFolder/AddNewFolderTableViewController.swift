@@ -9,7 +9,7 @@ import UIKit
 
 class AddNewFolderTableViewController: UITableViewController {
     
-    let folderIconData = FolderIconData.shared
+    let newFolderData = NewFolderData.shared
     let coreDataManager = MRCoreDataManager.shared
     
     var updateView: (() -> Void)?
@@ -49,7 +49,7 @@ class AddNewFolderTableViewController: UITableViewController {
     
     /// 完成按钮执行函数
     @objc private func doneButton() {
-        folderIconData.saveToCoreData()
+        newFolderData.saveToCoreData()
         // 更新文件夹视图
         updateView?()
         self.dismiss(animated: true)

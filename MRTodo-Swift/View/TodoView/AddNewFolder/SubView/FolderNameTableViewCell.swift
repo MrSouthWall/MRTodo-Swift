@@ -9,7 +9,7 @@ import UIKit
 
 class FolderNameTableViewCell: UITableViewCell {
 
-    let folderIconData = FolderIconData.shared
+    let newFolderData = NewFolderData.shared
     
     var folderIcon = FolderIcon()
     let folderName = UITextField()
@@ -33,7 +33,7 @@ class FolderNameTableViewCell: UITableViewCell {
     /// 设置视图
     private func setupFolderNameCell() {
         // 设置文件夹 Icon
-        folderIcon = FolderIcon(diameter: 100)
+        folderIcon = FolderIcon(diameter: 100, iconName: newFolderData.icon, hexColor: newFolderData.color)
         self.contentView.addSubview(folderIcon)
         folderIcon.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -68,6 +68,8 @@ class FolderNameTableViewCell: UITableViewCell {
     
     /// 更新数据
     @objc func reloadView() {
+        folderIcon.iconName = newFolderData.icon
+        folderIcon.hexColor = newFolderData.color
         folderIcon.setupFolderIconData()
     }
     
@@ -96,7 +98,7 @@ extension FolderNameTableViewCell: UITextFieldDelegate {
     // 文本编辑时，实时保存
     func textFieldDidChangeSelection(_ textField: UITextField) {
         if let text = textField.text {
-            folderIconData.name = text
+            newFolderData.name = text
         }
     }
 
@@ -104,7 +106,7 @@ extension FolderNameTableViewCell: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         // 读取文本字段的内容
         if let text = textField.text {
-            folderIconData.name = text
+            newFolderData.name = text
         }
         // 关闭键盘
         textField.resignFirstResponder()
