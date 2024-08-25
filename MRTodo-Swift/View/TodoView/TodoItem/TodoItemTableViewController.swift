@@ -42,7 +42,6 @@ class TodoItemTableViewController: UITableViewController {
             requestTodayTodoData()
         case .timeline:
             self.navigationItem.title = "时间轴"
-            print("timeline")
         case .all:
             self.navigationItem.title = "所有"
             requestAllTodoData()
@@ -97,7 +96,6 @@ class TodoItemTableViewController: UITableViewController {
         request.sortDescriptors = [NSSortDescriptor(key: "createTime", ascending: true), NSSortDescriptor(key: "orderId", ascending: true)]
         if let todoData = try? context.fetch(request) {
             self.todoData = todoData
-            print(todoData)
         } else {
             print("从 CoreData 取出文件夹数据失败！")
         }

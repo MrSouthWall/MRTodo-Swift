@@ -17,6 +17,8 @@ class FolderIconData {
     // 单例模式必备
     static let shared = FolderIconData(name: defaultName, icon: defaultIcon, color: defaultColor)
     
+    private let coreDataManager = MRCoreDataManager.shared
+    
     var name: String
     
     // didSet，当数据被更改时发出通知
@@ -43,4 +45,24 @@ class FolderIconData {
         self.icon = defaultIcon
         self.color = defaultColor
     }
+    
+    /// 保存数据
+    func saveToCoreData() {
+        let context = coreDataManager.context
+        let folder = Folder(context: context)
+        folder.name = name
+        folder.color = color
+        folder.icon = icon
+        // 取出 CoreData 数据，获取当前文件夹个数，并赋 orderId 值
+        let request = Folder.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(key: "orderId", ascending: true)]
+        if let count = try? context.count(for: request) {
+            folder.orderId = Int16(count) - 1
+        } else {
+            print("从 CoreData 取 count 失败！")
+        }
+        // 保存数据
+        coreDataManager.saveContext()
+    }
+    
 }

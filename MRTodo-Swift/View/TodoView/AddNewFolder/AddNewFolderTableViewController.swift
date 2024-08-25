@@ -49,23 +49,7 @@ class AddNewFolderTableViewController: UITableViewController {
     
     /// 完成按钮执行函数
     @objc private func doneButton() {
-        // 用户点击了完成按钮
-        // 存到 CoreData
-        let context = coreDataManager.context
-        let folder = Folder(context: context)
-        folder.name = folderIconData.name
-        folder.color = folderIconData.color
-        folder.icon = folderIconData.icon
-        // 取出 CoreData 数据，获取当前文件夹个数，并赋 orderId 值
-        let request = Folder.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(key: "orderId", ascending: true)]
-        if let count = try? context.count(for: request) {
-            folder.orderId = Int16(count) - 1
-        } else {
-            print("从 CoreData 取 count 失败！")
-        }
-        // 保存数据
-        coreDataManager.saveContext()
+        folderIconData.saveToCoreData()
         // 更新文件夹视图
         updateView?()
         self.dismiss(animated: true)
