@@ -6,14 +6,14 @@
 <h1 align="center">MRTodo</h1>
 
 <p align="center">
-分担大脑压力，专注当下任务。
+  分担大脑压力，专注当下任务。
 </p>
 
 <p align="center">
- <a href="https://developer.apple.com/swift/"><img alt="Static Badge" src="https://img.shields.io/badge/Language-Swift-F05138?logo=swift&logoColor=F05138"></a>
- <a href="https://developer.apple.com/cn/xcode/swiftui/"><img alt="Static Badge" src="https://img.shields.io/badge/UIFramework-UIkit-0062D4?logo=swift&logoColor=0062D4"></a>
- <a href="https://developer.apple.com/xcode/swiftdata/"><img alt="Static Badge" src="https://img.shields.io/badge/DataStorage-CoreData-6F8C9C?logo=swift&logoColor=6F8C9C"></a>
-  <a href="https://developer.apple.com/xcode/swiftdata/"><img alt="Static Badge" src="https://img.shields.io/badge/Available-iOS 17+-green?logo=apple&logoColor=green"></a>
+  <a href="https://developer.apple.com/swift/"><img alt="Static Badge" src="https://img.shields.io/badge/Language-Swift-F05138?logo=swift&logoColor=F05138"></a>
+  <a href="https://developer.apple.com/cn/xcode/swiftui/"><img alt="Static Badge" src="https://img.shields.io/badge/UIFramework-UIkit-0062D4?logo=swift&logoColor=0062D4"></a>
+  <a href="https://developer.apple.com/xcode/swiftdata/"><img alt="Static Badge" src="https://img.shields.io/badge/DataStorage-CoreData-6F8C9C?logo=swift&logoColor=6F8C9C"></a>
+  <a href="https://www.apple.com/ios/ios-17/"><img alt="Static Badge" src="https://img.shields.io/badge/Available-iOS 17+-green?logo=apple&logoColor=green"></a>
 </p>
 
 ## 关于作者和本项目
