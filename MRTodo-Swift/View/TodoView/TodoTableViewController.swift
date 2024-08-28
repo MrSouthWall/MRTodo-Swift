@@ -68,7 +68,7 @@ class TodoTableViewController: UITableViewController {
     
     /// 设置 Todo 文件夹列表 TableView
     private func setupTableView() {
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        self.tableView.register(FolderTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
     }
     
     /// 设置 Todo 文件夹列表 HeaderView
@@ -142,22 +142,17 @@ class TodoTableViewController: UITableViewController {
     
     /// 设置 Todo 文件夹列表的 Cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! FolderTableViewCell
 
         // Configure the cell...
+        
+        // 给每条数据赋值 orderId
         folderData[indexPath.row].orderId = Int16(indexPath.row)
         coreDataManager.saveContext()
         
-        var content = cell.defaultContentConfiguration()
-//        let icon = folderData[indexPath.row].icon!
-        let folderIcon = FolderIcon(diameter: 13, iconName: folderData[indexPath.row].icon!, hexColor: folderData[indexPath.row].color!).asImage()
-//        print(folderData[indexPath.row].icon)
-//        print(folderData[indexPath.row].color)
-        print(folderIcon)
-        content.image = folderIcon
-        content.text = folderData[indexPath.row].name!
-        cell.contentConfiguration = content
-        cell.accessoryType = .disclosureIndicator
+        let icon = FolderIcon(diameter: 38, iconName: folderData[indexPath.row].icon ?? "star", hexColor: folderData[indexPath.row].color ?? "#000000", isShoeShadow: false)
+        cell.configureCell(folderIcon: icon, folderName: folderData[indexPath.row].name ?? "空文件夹")
+        tableView.separatorInset.left = icon.diameter + 30
 
         return cell
     }

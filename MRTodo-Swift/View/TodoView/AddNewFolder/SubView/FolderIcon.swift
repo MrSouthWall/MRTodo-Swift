@@ -18,36 +18,40 @@ class FolderIcon: UIView {
     var diameter: Double = 50
     var iconName: String = "list.bullet"
     var hexColor: String = "#2D91F5"
+    var isShoeShadow: Bool = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupFolderIconData()
-        setupView()
+        
+        self.addSubview(circleView)
+        self.addSubview(iconImage)
     }
     
-    init(diameter: Double, iconName: String, hexColor: String) {
+    init(diameter: Double, iconName: String, hexColor: String, isShoeShadow: Bool) {
         self.diameter = diameter
         self.iconName = iconName
         self.hexColor = hexColor
+        self.isShoeShadow = isShoeShadow
         super.init(frame: .zero)
+        
+        self.addSubview(circleView)
+        self.addSubview(iconImage)
         setupFolderIconData()
-        setupView()
     }
     
-    /// 更新视图和数据
+    /// 设置更新视图和数据
     func setupFolderIconData() {
         // 更改圆形背景颜色
         circleView.backgroundColor = UIColor.colorForHex(hexColor)
-        circleView.applyShadow(color: UIColor.colorForHex(hexColor), radius: 10)
+        if isShoeShadow {
+            circleView.applyShadow(color: UIColor.colorForHex(hexColor), radius: 10)
+        }
         // 更改图片颜色
         iconImage.image = UIImage(systemName: iconName)
-    }
-    
-    private func setupView() {
+        
         // 配置颜色
         circleView.applyCornerRadius(cornerRadius: diameter / 2)
         circleView.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(circleView)
         NSLayoutConstraint.activate([
             circleView.widthAnchor.constraint(equalToConstant: diameter),
             circleView.heightAnchor.constraint(equalToConstant: diameter),
@@ -59,7 +63,6 @@ class FolderIcon: UIView {
         iconImage.tintColor = .white
         iconImage.contentMode = .scaleAspectFit
         iconImage.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(iconImage)
         NSLayoutConstraint.activate([
             iconImage.widthAnchor.constraint(equalToConstant: diameter / 2),
             iconImage.heightAnchor.constraint(equalToConstant: diameter / 2),
@@ -81,16 +84,4 @@ class FolderIcon: UIView {
     }
     */
 
-}
-
-
-extension FolderIcon {
-    /// 把 UIView 视图转换成 UIImage
-    func asImage() -> UIImage {
-        self.layoutIfNeeded()
-        let renderer = UIGraphicsImageRenderer(bounds: self.bounds)
-        return renderer.image { context in
-            self.layer.render(in: context.cgContext)
-        }
-    }
 }

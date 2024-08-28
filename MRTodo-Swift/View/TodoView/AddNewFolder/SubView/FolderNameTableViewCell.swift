@@ -33,7 +33,7 @@ class FolderNameTableViewCell: UITableViewCell {
     /// 设置视图
     private func setupFolderNameCell() {
         // 设置文件夹 Icon
-        folderIcon = FolderIcon(diameter: 100, iconName: newFolderData.icon, hexColor: newFolderData.color)
+        folderIcon = FolderIcon(diameter: 100, iconName: newFolderData.icon, hexColor: newFolderData.color, isShoeShadow: true)
         self.contentView.addSubview(folderIcon)
         folderIcon.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
