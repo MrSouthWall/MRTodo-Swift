@@ -14,6 +14,8 @@ class FolderNameTableViewCell: UITableViewCell {
     var folderIcon = FolderIcon()
     let folderName = UITextField()
     
+    var isEnableDoneButton: (() -> Void)?
+    
     // 覆盖默认的初始化方法，提供默认值
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -100,6 +102,7 @@ extension FolderNameTableViewCell: UITextFieldDelegate {
         if let text = textField.text {
             newFolderData.name = text
         }
+        isEnableDoneButton?()
     }
 
     // 文本编辑结束时，按下回车，保存并关闭键盘

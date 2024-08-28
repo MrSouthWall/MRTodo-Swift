@@ -12,6 +12,9 @@ class AddNewFolderTableViewController: UITableViewController {
     let newFolderData = NewFolderData.shared
     let coreDataManager = MRCoreDataManager.shared
     
+    let doneButton = UIBarButtonItem()
+    let cancelButton = UIBarButtonItem()
+    
     var updateView: (() -> Void)?
 
     override func viewDidLoad() {
@@ -31,10 +34,17 @@ class AddNewFolderTableViewController: UITableViewController {
     private func setupNavigationBar() {
         self.navigationItem.title = "新建文件夹"
         // 完成按钮
-        let doneButton = UIBarButtonItem(title: "完成", style: .done, target: self, action: #selector(doneButton))
+        doneButton.title = "完成"
+        doneButton.style = .done
+        doneButton.target = self
+        doneButton.action = #selector(doneButtonAction)
+        doneButton.isEnabled = false
         self.navigationItem.rightBarButtonItem = doneButton
         // 取消按钮
-        let cancelButton = UIBarButtonItem(title: "取消", style: .plain, target: self, action: #selector(cancelButton))
+        cancelButton.title = "取消"
+        cancelButton.style = .plain
+        cancelButton.target = self
+        cancelButton.action = #selector(cancelButtonAction)
         self.navigationItem.leftBarButtonItem = cancelButton
     }
     
@@ -48,7 +58,7 @@ class AddNewFolderTableViewController: UITableViewController {
     }
     
     /// 完成按钮执行函数
-    @objc private func doneButton() {
+    @objc private func doneButtonAction() {
         newFolderData.saveToCoreData()
         // 更新文件夹视图
         updateView?()
@@ -56,7 +66,7 @@ class AddNewFolderTableViewController: UITableViewController {
     }
     
     /// 取消按钮执行函数
-    @objc private func cancelButton() {
+    @objc private func cancelButtonAction() {
         // 用户点击了取消按钮
         self.dismiss(animated: true)
     }
@@ -79,6 +89,14 @@ class AddNewFolderTableViewController: UITableViewController {
         switch indexPath.section {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: "FolderNameCell", for: indexPath) as! FolderNameTableViewCell
+            cell.isEnableDoneButton = {
+                let nameTextField = self.newFolderData.name
+                if nameTextField.isEmpty || nameTextField == "" {
+                    self.doneButton.isEnabled = false
+                } else {
+                    self.doneButton.isEnabled = true
+                }
+            }
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "FolderColorCell", for: indexPath) as! FolderColorTableViewCell
