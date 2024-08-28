@@ -64,8 +64,8 @@ class FolderIcon: UIView {
         iconImage.contentMode = .scaleAspectFit
         iconImage.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            iconImage.widthAnchor.constraint(equalToConstant: diameter / 2),
-            iconImage.heightAnchor.constraint(equalToConstant: diameter / 2),
+            iconImage.widthAnchor.constraint(equalToConstant: diameter * 0.6),
+            iconImage.heightAnchor.constraint(equalToConstant: diameter * 0.6),
             iconImage.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             iconImage.centerYAnchor.constraint(equalTo: self.centerYAnchor),
         ])

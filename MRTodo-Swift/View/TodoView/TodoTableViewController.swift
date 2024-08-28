@@ -26,6 +26,13 @@ class TodoTableViewController: UITableViewController {
     /// Todo 列表文件夹数据
     private var folderData: [Folder] = []
     
+    let topEntries: [(icon: FolderIcon, name: String, count: String)] = [
+        (FolderIcon(diameter: 34, iconName: "star.circle.fill", hexColor: "007AFF", isShoeShadow: false), "今天", "0"),
+        (FolderIcon(diameter: 34, iconName: "calendar", hexColor: "FF3B31", isShoeShadow: false), "计划", "0"),
+        (FolderIcon(diameter: 34, iconName: "archivebox", hexColor: "000000", isShoeShadow: false), "所有", "0"),
+        (FolderIcon(diameter: 34, iconName: "flag.fill", hexColor: "FF9403", isShoeShadow: false), "旗帜", "0"),
+    ]
+    
     init(screenSize: CGRect, style: UITableView.Style) {
         self.screenSize = screenSize
         super.init(style: style)
@@ -150,7 +157,7 @@ class TodoTableViewController: UITableViewController {
         folderData[indexPath.row].orderId = Int16(indexPath.row)
         coreDataManager.saveContext()
         
-        let icon = FolderIcon(diameter: 38, iconName: folderData[indexPath.row].icon ?? "star", hexColor: folderData[indexPath.row].color ?? "#000000", isShoeShadow: false)
+        let icon = FolderIcon(diameter: 34, iconName: folderData[indexPath.row].icon ?? "star", hexColor: folderData[indexPath.row].color ?? "#000000", isShoeShadow: false)
         cell.configureCell(folderIcon: icon, folderName: folderData[indexPath.row].name ?? "空文件夹")
         tableView.separatorInset.left = icon.diameter + 30
 

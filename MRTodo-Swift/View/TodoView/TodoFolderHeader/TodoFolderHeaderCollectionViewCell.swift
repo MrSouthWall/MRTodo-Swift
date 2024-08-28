@@ -10,63 +10,52 @@ import UIKit
 class TodoFolderHeaderCollectionViewCell: UICollectionViewCell {
     
     /// 文件夹 Icon
-    private let folderIcon: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
+    private var folderIcon: FolderIcon = FolderIcon()
+    
     /// 文件夹名称
     private let folderName: UILabel = {
         let label = UILabel()
         label.textColor = .gray
-        label.font = UIFont.boldSystemFont(ofSize: 16)
-        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.boldSystemFont(ofSize: 14)
         label.textAlignment = .left
         return label
     }()
     /// 文件夹内 Todo 数量
     private let itemNumber: UILabel = {
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 26)
-        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.boldSystemFont(ofSize: 28)
         label.textAlignment = .right
         return label
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    /// 设置信息
+    func configure(folderIcon: FolderIcon, folderName: String, itemNumber: String) {
+        self.folderIcon = folderIcon
+        self.folderName.text = folderName
+        self.itemNumber.text = itemNumber
+        
+        self.folderIcon.translatesAutoresizingMaskIntoConstraints = false
+        self.folderName.translatesAutoresizingMaskIntoConstraints = false
+        self.itemNumber.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.addSubview(self.folderIcon)
+        self.addSubview(self.folderName)
+        self.addSubview(self.itemNumber)
         
         setupViews()
     }
     
-    /// 用于在使用 StoryBoard 时初始化视图
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupViews()
-    }
-    
-    /// 设置信息
-    func configure(folderIcon: String, folderName: String, itemNumber: String) {
-        self.folderIcon.image = UIImage(systemName: folderIcon)
-        self.folderName.text = folderName
-        self.itemNumber.text = itemNumber
-    }
-    
     /// 设置视图
     private func setupViews() {
-        self.addSubview(folderIcon)
-        self.addSubview(folderName)
-        self.addSubview(itemNumber)
-
         // 设置约束
         NSLayoutConstraint.activate([
             folderIcon.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
-            folderIcon.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+            folderIcon.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15),
             folderIcon.widthAnchor.constraint(equalToConstant: 30),
             folderIcon.heightAnchor.constraint(equalToConstant: 30),
         ])
         NSLayoutConstraint.activate([
-            folderName.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+            folderName.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15),
             folderName.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10),
         ])
         NSLayoutConstraint.activate([

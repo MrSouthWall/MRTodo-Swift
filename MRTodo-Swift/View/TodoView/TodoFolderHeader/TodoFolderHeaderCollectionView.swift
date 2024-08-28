@@ -11,17 +11,17 @@ private let reuseIdentifier = "Cell"
 
 class TodoFolderHeaderCollectionView: UICollectionView {
     
+    private let coreDataManager = MRCoreDataManager.shared
+    
+    private var todoData: [Todo] = []
+    private var currentFolder: Folder?
+    
     /// 初始化
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
         
         // 设置视图
         setupCollectionView()
-    }
-    
-    /// 用于在使用 StoryBoard 时初始化视图
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     /// 设置待办事项文件夹列表的头部分类视图
@@ -38,6 +38,68 @@ class TodoFolderHeaderCollectionView: UICollectionView {
         } else {
             cell.backgroundColor = .secondarySystemBackground
         }
+    }
+    
+    /// 获取今天的 Todo 列表
+    private func requestTodayTodoData() {
+        // 筛选今天的数据
+        let context = coreDataManager.context
+        let request = Todo.fetchRequest()
+        request.predicate = NSPredicate(format: "startTime == %@", Date.now as CVarArg)
+        request.sortDescriptors = [NSSortDescriptor(key: "endTime", ascending: true), NSSortDescriptor(key: "startTime", ascending: true)]
+        if let todoData = try? context.fetch(request) {
+            self.todoData = todoData
+        } else {
+            print("从 CoreData 取出文件夹数据失败！")
+        }
+    }
+    
+    /// 获取时间线的 Todo 列表
+    private func requestTimelineTodoData() {
+        // 筛选时间线的 Todo 数据
+    }
+    
+    /// 获取所有的 Todo 列表
+    private func requestAllTodoData() {
+        let context = coreDataManager.context
+        let request = Todo.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(key: "createTime", ascending: true), NSSortDescriptor(key: "orderId", ascending: true)]
+        if let todoData = try? context.fetch(request) {
+            self.todoData = todoData
+        } else {
+            print("从 CoreData 取出文件夹数据失败！")
+        }
+    }
+    
+    /// 获取旗帜的 Todo 列表
+    private func requestFlagTodoData() {
+        let context = coreDataManager.context
+        let request = Todo.fetchRequest()
+        request.predicate = NSPredicate(format: "flag == true")
+        request.sortDescriptors = [NSSortDescriptor(key: "createTime", ascending: true), NSSortDescriptor(key: "orderId", ascending: true)]
+        if let todoData = try? context.fetch(request) {
+            self.todoData = todoData
+        } else {
+            print("从 CoreData 取出文件夹数据失败！")
+        }
+    }
+    
+    /// 获取选定文件夹的 Todo 列表
+    private func requestTodoDataFilteredByFolder() {
+        let context = coreDataManager.context
+        let request = Todo.fetchRequest()
+        request.predicate = NSPredicate(format: "folder.name == %@", currentFolder?.name ?? "")
+        request.sortDescriptors = [NSSortDescriptor(key: "orderId", ascending: true)]
+        if let todoData = try? context.fetch(request) {
+            self.todoData = todoData
+        } else {
+            print("从 CoreData 取出文件夹数据失败！")
+        }
+    }
+    
+    /// 用于在使用 StoryBoard 时初始化视图
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
 
@@ -66,16 +128,9 @@ extension TodoTableViewController: UICollectionViewDataSource {
         
         cell.backgroundColor = .cellBackground
         cell.applyCornerRadius()
+        let i = indexPath.row
+        cell.configure(folderIcon: topEntries[i].icon, folderName: topEntries[i].name, itemNumber: topEntries[i].count)
         
-        let folderData: [(icon: String, name: String, count: String)] = [
-            ("star.circle.fill", "今天", "0"),
-            ("calendar", "计划", "3"),
-            ("archivebox.circle", "所有", "10"),
-            ("flag.fill", "旗帜", "7"),
-        ]
-        for i in indexPath {
-            cell.configure(folderIcon: folderData[i].icon, folderName: folderData[i].name, itemNumber: folderData[i].count)
-        }
         return cell
     }
     
