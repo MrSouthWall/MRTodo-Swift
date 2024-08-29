@@ -13,9 +13,6 @@ class TodoFolderHeaderCollectionView: UICollectionView {
     
     private let coreDataManager = MRCoreDataManager.shared
     
-    private var todoData: [Todo] = []
-    private var currentFolder: Folder?
-    
     /// 初始化
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
@@ -37,63 +34,6 @@ class TodoFolderHeaderCollectionView: UICollectionView {
             cell.backgroundColor = .white
         } else {
             cell.backgroundColor = .secondarySystemBackground
-        }
-    }
-    
-    /// 获取今天的 Todo 列表
-    private func requestTodayTodoData() {
-        // 筛选今天的数据
-        let context = coreDataManager.context
-        let request = Todo.fetchRequest()
-        request.predicate = NSPredicate(format: "startTime == %@", Date.now as CVarArg)
-        request.sortDescriptors = [NSSortDescriptor(key: "endTime", ascending: true), NSSortDescriptor(key: "startTime", ascending: true)]
-        if let todoData = try? context.fetch(request) {
-            self.todoData = todoData
-        } else {
-            print("从 CoreData 取出文件夹数据失败！")
-        }
-    }
-    
-    /// 获取时间线的 Todo 列表
-    private func requestTimelineTodoData() {
-        // 筛选时间线的 Todo 数据
-    }
-    
-    /// 获取所有的 Todo 列表
-    private func requestAllTodoData() {
-        let context = coreDataManager.context
-        let request = Todo.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(key: "createTime", ascending: true), NSSortDescriptor(key: "orderId", ascending: true)]
-        if let todoData = try? context.fetch(request) {
-            self.todoData = todoData
-        } else {
-            print("从 CoreData 取出文件夹数据失败！")
-        }
-    }
-    
-    /// 获取旗帜的 Todo 列表
-    private func requestFlagTodoData() {
-        let context = coreDataManager.context
-        let request = Todo.fetchRequest()
-        request.predicate = NSPredicate(format: "flag == true")
-        request.sortDescriptors = [NSSortDescriptor(key: "createTime", ascending: true), NSSortDescriptor(key: "orderId", ascending: true)]
-        if let todoData = try? context.fetch(request) {
-            self.todoData = todoData
-        } else {
-            print("从 CoreData 取出文件夹数据失败！")
-        }
-    }
-    
-    /// 获取选定文件夹的 Todo 列表
-    private func requestTodoDataFilteredByFolder() {
-        let context = coreDataManager.context
-        let request = Todo.fetchRequest()
-        request.predicate = NSPredicate(format: "folder.name == %@", currentFolder?.name ?? "")
-        request.sortDescriptors = [NSSortDescriptor(key: "orderId", ascending: true)]
-        if let todoData = try? context.fetch(request) {
-            self.todoData = todoData
-        } else {
-            print("从 CoreData 取出文件夹数据失败！")
         }
     }
     
@@ -147,18 +87,22 @@ extension TodoTableViewController: UICollectionViewDelegate {
         case 0:
             let todoTableViewController = TodoItemTableViewController(style: .plain)
             todoTableViewController.todoFilteringMode = .today
+            todoTableViewController.setTodoData(todoData: requestTodayTodoData())
             self.navigationController?.pushViewController(todoTableViewController, animated: true)
         case 1:
             let todoTableViewController = TodoItemTableViewController(style: .plain)
             todoTableViewController.todoFilteringMode = .timeline
+            todoTableViewController.setTodoData(todoData: requestTimelineTodoData())
             self.navigationController?.pushViewController(todoTableViewController, animated: true)
         case 2:
             let todoTableViewController = TodoItemTableViewController(style: .plain)
             todoTableViewController.todoFilteringMode = .all
+            todoTableViewController.setTodoData(todoData: requestAllTodoData())
             self.navigationController?.pushViewController(todoTableViewController, animated: true)
         case 3:
             let todoTableViewController = TodoItemTableViewController(style: .plain)
             todoTableViewController.todoFilteringMode = .flag
+            todoTableViewController.setTodoData(todoData: requestFlagTodoData())
             self.navigationController?.pushViewController(todoTableViewController, animated: true)
         default:
             break

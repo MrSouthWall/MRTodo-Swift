@@ -53,11 +53,17 @@ class TodoTableViewController: UITableViewController {
         
         self.tableView.separatorInset.left = iconDiameter + 30
         
+        let todayCount = String(requestTodayTodoData().count)
+        let timeLineCount = String(requestTimelineTodoData().count)
+        let allCount = String(requestAllTodoData().count)
+        let flagCount = String(requestFlagTodoData().count)
+        
+        // 置顶的条目信息
         topEntries = [
-            (FolderIcon(diameter: iconDiameter, iconName: "star.circle.fill", hexColor: "007AFF", isShoeShadow: false), "今天", "0"),
-            (FolderIcon(diameter: iconDiameter, iconName: "calendar", hexColor: "FF3B31", isShoeShadow: false), "计划", "0"),
-            (FolderIcon(diameter: iconDiameter, iconName: "archivebox", hexColor: "000000", isShoeShadow: false), "所有", "0"),
-            (FolderIcon(diameter: iconDiameter, iconName: "flag.fill", hexColor: "FF9403", isShoeShadow: false), "旗帜", "0"),
+            (FolderIcon(diameter: iconDiameter, iconName: "star.circle.fill", hexColor: "007AFF", isShoeShadow: false), "今天", todayCount),
+            (FolderIcon(diameter: iconDiameter, iconName: "calendar", hexColor: "FF3B31", isShoeShadow: false), "计划", timeLineCount),
+            (FolderIcon(diameter: iconDiameter, iconName: "archivebox", hexColor: "000000", isShoeShadow: false), "所有", allCount),
+            (FolderIcon(diameter: iconDiameter, iconName: "flag.fill", hexColor: "FF9403", isShoeShadow: false), "旗帜", flagCount),
         ]
 
         fetchRequestData()
@@ -150,6 +156,70 @@ class TodoTableViewController: UITableViewController {
             
             // 强制刷新布局，以便分隔符的改变被动画化
             self.tableView.layoutIfNeeded()
+        }
+    }
+    
+    // MARK: - 获取 CoreData 数据
+    
+    /// 获取今天的 Todo 列表
+    func requestTodayTodoData() -> [Todo] {
+        // 筛选今天的数据
+        let context = coreDataManager.context
+        let request = Todo.fetchRequest()
+        request.predicate = NSPredicate(format: "startTime == %@", Date.now as CVarArg)
+        request.sortDescriptors = [NSSortDescriptor(key: "endTime", ascending: true), NSSortDescriptor(key: "startTime", ascending: true)]
+        if let todoData = try? context.fetch(request) {
+            return todoData
+        } else {
+            print("从 CoreData 取出文件夹数据失败！")
+            return []
+        }
+    }
+    
+    /// 获取时间线的 Todo 列表
+    func requestTimelineTodoData() -> [Todo] {
+        // 筛选时间线的 Todo 数据
+        return []
+    }
+    
+    /// 获取所有的 Todo 列表
+    func requestAllTodoData() -> [Todo] {
+        let context = coreDataManager.context
+        let request = Todo.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(key: "createTime", ascending: true), NSSortDescriptor(key: "orderId", ascending: true)]
+        if let todoData = try? context.fetch(request) {
+            return todoData
+        } else {
+            print("从 CoreData 取出文件夹数据失败！")
+            return []
+        }
+    }
+    
+    /// 获取旗帜的 Todo 列表
+    func requestFlagTodoData() -> [Todo] {
+        let context = coreDataManager.context
+        let request = Todo.fetchRequest()
+        request.predicate = NSPredicate(format: "flag == true")
+        request.sortDescriptors = [NSSortDescriptor(key: "createTime", ascending: true), NSSortDescriptor(key: "orderId", ascending: true)]
+        if let todoData = try? context.fetch(request) {
+            return todoData
+        } else {
+            print("从 CoreData 取出文件夹数据失败！")
+            return []
+        }
+    }
+    
+    /// 获取选定文件夹的 Todo 列表
+    func requestTodoDataFilteredByFolder(folderName: String) -> [Todo] {
+        let context = coreDataManager.context
+        let request = Todo.fetchRequest()
+        request.predicate = NSPredicate(format: "folder.name == %@", folderName)
+        request.sortDescriptors = [NSSortDescriptor(key: "orderId", ascending: true)]
+        if let todoData = try? context.fetch(request) {
+            return todoData
+        } else {
+            print("从 CoreData 取出文件夹数据失败！")
+            return []
         }
     }
     
@@ -292,7 +362,9 @@ class TodoTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let todoTableViewController = TodoItemTableViewController(style: .plain)
         todoTableViewController.todoFilteringMode = .folder
-        todoTableViewController.currentFolder = folderData[indexPath.row]
+        let currentFolderName = folderData[indexPath.row].name
+        todoTableViewController.currentFolderName = currentFolderName
+        todoTableViewController.setTodoData(todoData: requestTodoDataFilteredByFolder(folderName: currentFolderName ?? ""))
         self.navigationController?.pushViewController(todoTableViewController, animated: true)
     }
     
