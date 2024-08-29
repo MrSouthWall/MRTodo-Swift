@@ -19,6 +19,8 @@ class TodoTableViewController: UITableViewController {
      */
     private let screenSize: CGRect
     
+    private let iconDiameter = 34.0
+    
     private let coreDataManager = MRCoreDataManager.shared
     private let folderIconData = NewFolderData.shared
     private let newTodoData = NewTodoData.shared
@@ -26,12 +28,7 @@ class TodoTableViewController: UITableViewController {
     /// Todo 列表文件夹数据
     private var folderData: [Folder] = []
     
-    let topEntries: [(icon: FolderIcon, name: String, count: String)] = [
-        (FolderIcon(diameter: 34, iconName: "star.circle.fill", hexColor: "007AFF", isShoeShadow: false), "今天", "0"),
-        (FolderIcon(diameter: 34, iconName: "calendar", hexColor: "FF3B31", isShoeShadow: false), "计划", "0"),
-        (FolderIcon(diameter: 34, iconName: "archivebox", hexColor: "000000", isShoeShadow: false), "所有", "0"),
-        (FolderIcon(diameter: 34, iconName: "flag.fill", hexColor: "FF9403", isShoeShadow: false), "旗帜", "0"),
-    ]
+    var topEntries: [(icon: FolderIcon, name: String, count: String)] = []
     
     init(screenSize: CGRect, style: UITableView.Style) {
         self.screenSize = screenSize
@@ -53,6 +50,15 @@ class TodoTableViewController: UITableViewController {
         
         // 设置导航栏
         self.navigationItem.title = "待办事项"
+        
+        self.tableView.separatorInset.left = iconDiameter + 30
+        
+        topEntries = [
+            (FolderIcon(diameter: iconDiameter, iconName: "star.circle.fill", hexColor: "007AFF", isShoeShadow: false), "今天", "0"),
+            (FolderIcon(diameter: iconDiameter, iconName: "calendar", hexColor: "FF3B31", isShoeShadow: false), "计划", "0"),
+            (FolderIcon(diameter: iconDiameter, iconName: "archivebox", hexColor: "000000", isShoeShadow: false), "所有", "0"),
+            (FolderIcon(diameter: iconDiameter, iconName: "flag.fill", hexColor: "FF9403", isShoeShadow: false), "旗帜", "0"),
+        ]
 
         fetchRequestData()
         // 设置视图
@@ -132,7 +138,22 @@ class TodoTableViewController: UITableViewController {
         self.present(addNewTodoNavigationController, animated: true, completion: nil)
     }
     
-
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: true)
+        // 开始动画
+        UIView.animate(.easeInOut) {
+            if self.tableView.isEditing {
+                self.tableView.separatorInset.left = self.iconDiameter + 70
+            } else {
+                self.tableView.separatorInset.left = self.iconDiameter + 30
+            }
+            
+            // 强制刷新布局，以便分隔符的改变被动画化
+            self.tableView.layoutIfNeeded()
+        }
+    }
+    
+    
     // MARK: - Table view data source
 
     /// Header 的个数
@@ -157,9 +178,8 @@ class TodoTableViewController: UITableViewController {
         folderData[indexPath.row].orderId = Int16(indexPath.row)
         coreDataManager.saveContext()
         
-        let icon = FolderIcon(diameter: 34, iconName: folderData[indexPath.row].icon ?? "star", hexColor: folderData[indexPath.row].color ?? "#000000", isShoeShadow: false)
+        let icon = FolderIcon(diameter: iconDiameter, iconName: folderData[indexPath.row].icon ?? "star", hexColor: folderData[indexPath.row].color ?? "#000000", isShoeShadow: false)
         cell.configureCell(folderIcon: icon, folderName: folderData[indexPath.row].name ?? "空文件夹")
-        tableView.separatorInset.left = icon.diameter + 30
 
         return cell
     }
