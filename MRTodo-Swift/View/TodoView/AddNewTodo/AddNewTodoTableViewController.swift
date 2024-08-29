@@ -15,7 +15,6 @@ private let listCell = "ListCell"
 
 class AddNewTodoTableViewController: UITableViewController {
     
-    private let coreDataManager = MRCoreDataManager.shared
     private let newTodoData = NewTodoData.shared
 
     override func viewDidLoad() {

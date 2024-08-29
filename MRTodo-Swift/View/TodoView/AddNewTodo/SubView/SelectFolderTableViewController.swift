@@ -11,7 +11,6 @@ private let reuseIdentifier = "Cell"
 
 class SelectFolderTableViewController: UITableViewController {
     
-    private let coreDataManager = MRCoreDataManager.shared
     private let newTodoData = NewTodoData.shared
     private var folderData: [Folder] = []
     

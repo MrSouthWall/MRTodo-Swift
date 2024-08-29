@@ -11,8 +11,6 @@ private let reuseIdentifier = "Cell"
 
 class TodoFolderHeaderCollectionView: UICollectionView {
     
-    private let coreDataManager = MRCoreDataManager.shared
-    
     /// 初始化
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)

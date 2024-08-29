@@ -10,7 +10,6 @@ import UIKit
 class AddNewFolderTableViewController: UITableViewController {
     
     let newFolderData = NewFolderData.shared
-    let coreDataManager = MRCoreDataManager.shared
     
     let doneButton = UIBarButtonItem()
     let cancelButton = UIBarButtonItem()
