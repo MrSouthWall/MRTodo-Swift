@@ -33,7 +33,7 @@ class NewFolderData {
         }
     }
     
-    init(name: String, icon: String, color: String) {
+    private init(name: String, icon: String, color: String) {
         self.name = name
         self.icon = icon
         self.color = color

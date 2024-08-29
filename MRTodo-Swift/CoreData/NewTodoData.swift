@@ -29,7 +29,7 @@ class NewTodoData {
     var endTime: Date?
     var priority: Int16
     
-    init(createTime: Date, title: String, note: String, isDone: Bool, orderId: Int16, folder: Folder?, flag: Bool, startTime: Date?, endTime: Date?, priority: Int16) {
+    private init(createTime: Date, title: String, note: String, isDone: Bool, orderId: Int16, folder: Folder?, flag: Bool, startTime: Date?, endTime: Date?, priority: Int16) {
         self.createTime = createTime
         self.title = title
         self.note = note
