@@ -26,7 +26,7 @@ class TodoTableViewController: UITableViewController {
     private let newTodoData = NewTodoData.shared
     
     /// Todo 列表文件夹数据
-    private var folderData: [Folder] = []
+    private var folderData: [Folder] = Folder.requestWithOrderId()
     
     var topEntries: [(icon: FolderIcon, name: String, count: String)] = []
     
@@ -53,10 +53,10 @@ class TodoTableViewController: UITableViewController {
         
         self.tableView.separatorInset.left = iconDiameter + 30
         
-        let todayCount = String(requestTodayTodoData().count)
-        let timeLineCount = String(requestTimelineTodoData().count)
-        let allCount = String(requestAllTodoData().count)
-        let flagCount = String(requestFlagTodoData().count)
+        let todayCount = String(Todo.requestWithToday().count)
+        let timeLineCount = String(Todo.requestWithTimeline().count)
+        let allCount = String(Todo.requestWithAllTodo().count)
+        let flagCount = String(Todo.requestWithFlag().count)
         
         // 置顶的条目信息
         topEntries = [
@@ -66,23 +66,10 @@ class TodoTableViewController: UITableViewController {
             (FolderIcon(diameter: iconDiameter, iconName: "flag.fill", hexColor: "FF9403", isShoeShadow: false), "旗帜", flagCount),
         ]
 
-        fetchRequestData()
         // 设置视图
         setupTableView()
         setupTableHeaderView()
         setupAddNewTodoButton()
-    }
-    
-    /// 从 CoreData 取出数据
-    private func fetchRequestData() {
-        let context = coreDataManager.context
-        let request = Folder.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(key: "orderId", ascending: true)]
-        if let folderData = try? context.fetch(request) {
-            self.folderData = folderData
-        } else {
-            print("从 CoreData 取出文件夹数据失败！")
-        }
     }
     
     /// 设置 Todo 文件夹列表 TableView
@@ -159,70 +146,6 @@ class TodoTableViewController: UITableViewController {
         }
     }
     
-    // MARK: - 获取 CoreData 数据
-    
-    /// 获取今天的 Todo 列表
-    func requestTodayTodoData() -> [Todo] {
-        // 筛选今天的数据
-        let context = coreDataManager.context
-        let request = Todo.fetchRequest()
-        request.predicate = NSPredicate(format: "startTime == %@", Date.now as CVarArg)
-        request.sortDescriptors = [NSSortDescriptor(key: "endTime", ascending: true), NSSortDescriptor(key: "startTime", ascending: true)]
-        if let todoData = try? context.fetch(request) {
-            return todoData
-        } else {
-            print("从 CoreData 取出文件夹数据失败！")
-            return []
-        }
-    }
-    
-    /// 获取时间线的 Todo 列表
-    func requestTimelineTodoData() -> [Todo] {
-        // 筛选时间线的 Todo 数据
-        return []
-    }
-    
-    /// 获取所有的 Todo 列表
-    func requestAllTodoData() -> [Todo] {
-        let context = coreDataManager.context
-        let request = Todo.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(key: "createTime", ascending: true), NSSortDescriptor(key: "orderId", ascending: true)]
-        if let todoData = try? context.fetch(request) {
-            return todoData
-        } else {
-            print("从 CoreData 取出文件夹数据失败！")
-            return []
-        }
-    }
-    
-    /// 获取旗帜的 Todo 列表
-    func requestFlagTodoData() -> [Todo] {
-        let context = coreDataManager.context
-        let request = Todo.fetchRequest()
-        request.predicate = NSPredicate(format: "flag == true")
-        request.sortDescriptors = [NSSortDescriptor(key: "createTime", ascending: true), NSSortDescriptor(key: "orderId", ascending: true)]
-        if let todoData = try? context.fetch(request) {
-            return todoData
-        } else {
-            print("从 CoreData 取出文件夹数据失败！")
-            return []
-        }
-    }
-    
-    /// 获取选定文件夹的 Todo 列表
-    func requestTodoDataFilteredByFolder(folderName: String) -> [Todo] {
-        let context = coreDataManager.context
-        let request = Todo.fetchRequest()
-        request.predicate = NSPredicate(format: "folder.name == %@", folderName)
-        request.sortDescriptors = [NSSortDescriptor(key: "orderId", ascending: true)]
-        if let todoData = try? context.fetch(request) {
-            return todoData
-        } else {
-            print("从 CoreData 取出文件夹数据失败！")
-            return []
-        }
-    }
-    
     
     // MARK: - Table view data source
 
@@ -294,7 +217,7 @@ class TodoTableViewController: UITableViewController {
         let addNewFolderTableViewController = AddNewFolderTableViewController(style: .insetGrouped)
         // 一个闭包，用于刷新视图
         addNewFolderTableViewController.updateView = { [weak self] in
-            self?.fetchRequestData()
+            self?.folderData = Folder.requestWithOrderId()
             // 两种刷新视图的方式，第一种是在最后插入一行
             self?.tableView.insertRows(at: [IndexPath(row: (self?.folderData.count)! - 1, section: 0)], with: .automatic)
             // 第二种是直接整个视图刷新，为了节省性能，我们选择第一种方式
@@ -364,7 +287,7 @@ class TodoTableViewController: UITableViewController {
         todoTableViewController.todoFilteringMode = .folder
         let currentFolderName = folderData[indexPath.row].name
         todoTableViewController.currentFolderName = currentFolderName
-        todoTableViewController.setTodoData(todoData: requestTodoDataFilteredByFolder(folderName: currentFolderName ?? ""))
+        todoTableViewController.setTodoData(todoData: Todo.requestWithFolder(folderName: currentFolderName ?? ""))
         self.navigationController?.pushViewController(todoTableViewController, animated: true)
     }
     

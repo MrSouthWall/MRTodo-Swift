@@ -87,22 +87,22 @@ extension TodoTableViewController: UICollectionViewDelegate {
         case 0:
             let todoTableViewController = TodoItemTableViewController(style: .plain)
             todoTableViewController.todoFilteringMode = .today
-            todoTableViewController.setTodoData(todoData: requestTodayTodoData())
+            todoTableViewController.setTodoData(todoData: Todo.requestWithToday())
             self.navigationController?.pushViewController(todoTableViewController, animated: true)
         case 1:
             let todoTableViewController = TodoItemTableViewController(style: .plain)
             todoTableViewController.todoFilteringMode = .timeline
-            todoTableViewController.setTodoData(todoData: requestTimelineTodoData())
+            todoTableViewController.setTodoData(todoData: Todo.requestWithTimeline())
             self.navigationController?.pushViewController(todoTableViewController, animated: true)
         case 2:
             let todoTableViewController = TodoItemTableViewController(style: .plain)
             todoTableViewController.todoFilteringMode = .all
-            todoTableViewController.setTodoData(todoData: requestAllTodoData())
+            todoTableViewController.setTodoData(todoData: Todo.requestWithAllTodo())
             self.navigationController?.pushViewController(todoTableViewController, animated: true)
         case 3:
             let todoTableViewController = TodoItemTableViewController(style: .plain)
             todoTableViewController.todoFilteringMode = .flag
-            todoTableViewController.setTodoData(todoData: requestFlagTodoData())
+            todoTableViewController.setTodoData(todoData: Todo.requestWithFlag())
             self.navigationController?.pushViewController(todoTableViewController, animated: true)
         default:
             break

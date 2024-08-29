@@ -62,15 +62,7 @@ class NewTodoData {
     
     /// 获取第一个文件夹
     func getFirstFolder() {
-        let coreDataManager = MRCoreDataManager.shared
-        let context = coreDataManager.context
-        let request = Folder.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(key: "orderId", ascending: true)]
-        if let folderData = try? context.fetch(request) {
-            self.folder = folderData.first
-        } else {
-            print("给 newTodoData 赋值文件夹数据失败！")
-        }
+        self.folder = Folder.requestWithOrderId().first
     }
     
     /// 保存数据

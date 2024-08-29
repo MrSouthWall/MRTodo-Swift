@@ -25,15 +25,7 @@ class SelectFolderTableViewController: UITableViewController {
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
         self.navigationItem.title = "待办文件夹"
-        
-        let context = coreDataManager.context
-        let request = Folder.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(key: "orderId", ascending: true)]
-        if let folderData = try? context.fetch(request) {
-            self.folderData = folderData
-        } else {
-            print("从 CoreData 取出文件夹数据失败！")
-        }
+        self.folderData = Folder.requestWithOrderId()
         
         self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
 

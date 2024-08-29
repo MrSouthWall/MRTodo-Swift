@@ -54,13 +54,7 @@ class NewFolderData {
         folder.color = color
         folder.icon = icon
         // 取出 CoreData 数据，获取当前文件夹个数，并赋 orderId 值
-        let request = Folder.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(key: "orderId", ascending: true)]
-        if let count = try? context.count(for: request) {
-            folder.orderId = Int16(count) - 1
-        } else {
-            print("从 CoreData 取 count 失败！")
-        }
+        folder.orderId = Int16(Folder.requestWithOrderId().count - 1)
         // 保存数据
         coreDataManager.saveContext()
     }
