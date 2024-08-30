@@ -292,7 +292,6 @@ class TodoTableViewController: UITableViewController {
         todoTableViewController.todoFilteringMode = .folder
         let currentFolderName = folderData[indexPath.row].name
         todoTableViewController.currentFolderName = currentFolderName
-        todoTableViewController.setTodoData(todoData: Todo.requestWithFolder(folderName: currentFolderName ?? ""))
         self.navigationController?.pushViewController(todoTableViewController, animated: true)
     }
     
@@ -346,22 +345,18 @@ extension TodoTableViewController: UICollectionViewDataSource, UICollectionViewD
         case 0:
             let todoTableViewController = TodoItemTableViewController(style: .plain)
             todoTableViewController.todoFilteringMode = .today
-            todoTableViewController.setTodoData(todoData: Todo.requestWithToday())
             self.navigationController?.pushViewController(todoTableViewController, animated: true)
         case 1:
             let todoTableViewController = TodoItemTableViewController(style: .plain)
             todoTableViewController.todoFilteringMode = .timeline
-            todoTableViewController.setTodoData(todoData: Todo.requestWithTimeline())
             self.navigationController?.pushViewController(todoTableViewController, animated: true)
         case 2:
             let todoTableViewController = TodoItemTableViewController(style: .plain)
             todoTableViewController.todoFilteringMode = .all
-            todoTableViewController.setTodoData(todoData: Todo.requestWithAllTodo())
             self.navigationController?.pushViewController(todoTableViewController, animated: true)
         case 3:
             let todoTableViewController = TodoItemTableViewController(style: .plain)
             todoTableViewController.todoFilteringMode = .flag
-            todoTableViewController.setTodoData(todoData: Todo.requestWithFlag())
             self.navigationController?.pushViewController(todoTableViewController, animated: true)
         default:
             break

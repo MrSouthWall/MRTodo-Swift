@@ -39,23 +39,23 @@ class TodoItemTableViewController: UITableViewController {
         switch todoFilteringMode {
         case .today:
             self.navigationItem.title = "今天"
+            todoData = Todo.requestWithToday()
         case .timeline:
             self.navigationItem.title = "时间轴"
+            todoData = Todo.requestWithTimeline()
         case .all:
             self.navigationItem.title = "所有"
+            todoData = Todo.requestWithAllTodo()
         case .flag:
             self.navigationItem.title = "旗帜"
+            todoData = Todo.requestWithFlag()
         case .folder:
             self.navigationItem.title = currentFolderName
+            todoData = Todo.requestWithFolder(folderName: currentFolderName ?? "")
         }
         // 设置导航栏
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
-    }
-    
-    /// 设置数据
-    func setTodoData(todoData: [Todo]) {
-        self.todoData = todoData
     }
     
 
