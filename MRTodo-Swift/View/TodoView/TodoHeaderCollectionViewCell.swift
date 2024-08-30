@@ -34,6 +34,11 @@ class TodoHeaderCollectionViewCell: UICollectionViewCell {
         self.folderName.text = folderName
         self.itemNumber.text = itemNumber
         
+        setupViews()
+    }
+    
+    /// 设置视图
+    private func setupViews() {
         self.folderIcon.translatesAutoresizingMaskIntoConstraints = false
         self.folderName.translatesAutoresizingMaskIntoConstraints = false
         self.itemNumber.translatesAutoresizingMaskIntoConstraints = false
@@ -42,11 +47,6 @@ class TodoHeaderCollectionViewCell: UICollectionViewCell {
         self.addSubview(self.folderName)
         self.addSubview(self.itemNumber)
         
-        setupViews()
-    }
-    
-    /// 设置视图
-    private func setupViews() {
         // 设置约束
         NSLayoutConstraint.activate([
             folderIcon.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),

@@ -11,6 +11,11 @@ private let reuseIdentifier = "Cell"
 
 class TodoTableViewController: UITableViewController {
     
+    // 单例对象
+    private let coreDataManager = MRCoreDataManager.shared
+    private let folderIconData = NewFolderData.shared
+    private let newTodoData = NewTodoData.shared
+    
     /**
      通过 UIScreen.main.bounds 获取屏幕尺寸的方式，在 iOS 16 以上的版本中已被弃用。
      苹果官方推荐使用 view.window.windowScene.screen。
@@ -19,16 +24,20 @@ class TodoTableViewController: UITableViewController {
      */
     private let screenSize: CGRect
     
+    // 常量
     private let iconDiameter = 34.0
-    
-    private let coreDataManager = MRCoreDataManager.shared
-    private let folderIconData = NewFolderData.shared
-    private let newTodoData = NewTodoData.shared
     
     /// Todo 列表文件夹数据
     private var folderData: [Folder] = Folder.requestWithOrderId()
-    
-    var topEntries: [(icon: FolderIcon, name: String, count: String)] = []
+    /// 置顶分类信息
+    private var topEntries: [(icon: FolderIcon, name: String, count: String)] {
+        return [
+            (FolderIcon(diameter: iconDiameter, iconName: "star.circle.fill", hexColor: "007AFF", isShoeShadow: false), "今天", String(Todo.requestWithToday().count)),
+            (FolderIcon(diameter: iconDiameter, iconName: "calendar", hexColor: "FF3B31", isShoeShadow: false), "计划", String(Todo.requestWithTimeline().count)),
+            (FolderIcon(diameter: iconDiameter, iconName: "archivebox", hexColor: "000000", isShoeShadow: false), "所有", String(Todo.requestWithAllTodo().count)),
+            (FolderIcon(diameter: iconDiameter, iconName: "flag.fill", hexColor: "FF9403", isShoeShadow: false), "旗帜", String(Todo.requestWithFlag().count)),
+        ]
+    }
     
     init(screenSize: CGRect, style: UITableView.Style) {
         self.screenSize = screenSize
@@ -38,47 +47,31 @@ class TodoTableViewController: UITableViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        self.clearsSelectionOnViewWillAppear = true
-
+        
+        // 设置导航栏
+        setupNavigation()
+        // 设置头部置顶的分类选项卡
+        setupHeaderView()
+        // 设置文件夹列表
+        setupTableView()
+        // 设置右下角悬浮按钮
+        setupAddNewTodoButton()
+    }
+    
+    /// 配置导航栏
+    private func setupNavigation() {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         self.navigationItem.rightBarButtonItem = self.editButtonItem
         
         // 设置导航栏
         self.navigationItem.title = "待办事项"
-        
-        self.tableView.separatorInset.left = iconDiameter + 30
-        
-        let todayCount = String(Todo.requestWithToday().count)
-        let timeLineCount = String(Todo.requestWithTimeline().count)
-        let allCount = String(Todo.requestWithAllTodo().count)
-        let flagCount = String(Todo.requestWithFlag().count)
-        
-        // 置顶的条目信息
-        topEntries = [
-            (FolderIcon(diameter: iconDiameter, iconName: "star.circle.fill", hexColor: "007AFF", isShoeShadow: false), "今天", todayCount),
-            (FolderIcon(diameter: iconDiameter, iconName: "calendar", hexColor: "FF3B31", isShoeShadow: false), "计划", timeLineCount),
-            (FolderIcon(diameter: iconDiameter, iconName: "archivebox", hexColor: "000000", isShoeShadow: false), "所有", allCount),
-            (FolderIcon(diameter: iconDiameter, iconName: "flag.fill", hexColor: "FF9403", isShoeShadow: false), "旗帜", flagCount),
-        ]
-
-        // 设置视图
-        setupTableView()
-        setupTableHeaderView()
-        setupAddNewTodoButton()
-    }
-    
-    /// 设置 Todo 文件夹列表 TableView
-    private func setupTableView() {
-        self.tableView.register(FolderTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
     }
     
     /// 设置 Todo 文件夹列表 HeaderView
-    private func setupTableHeaderView() {
+    private func setupHeaderView() {
         let width = screenSize.width
         let height = 220.0
         let layout = UICollectionViewFlowLayout()
@@ -93,6 +86,15 @@ class TodoTableViewController: UITableViewController {
         todoHeaderCollectionView.register(TodoHeaderCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         todoHeaderCollectionView.backgroundColor = .systemGroupedBackground
         self.tableView.tableHeaderView = todoHeaderCollectionView
+    }
+    
+    /// 设置 Todo 文件夹列表 TableView
+    private func setupTableView() {
+        // Uncomment the following line to preserve selection between presentations
+        self.clearsSelectionOnViewWillAppear = true
+        
+        self.tableView.separatorInset.left = iconDiameter + 30
+        self.tableView.register(FolderTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
     }
     
     /// 设置新增待办按钮
@@ -313,9 +315,11 @@ class TodoTableViewController: UITableViewController {
 }
 
 
-// MARK: - UICollectionViewDataSource
+// MARK: - UICollectionView DataSource、Delegate
 
-extension TodoTableViewController: UICollectionViewDataSource {
+extension TodoTableViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    // UICollectionViewDataSource
+    
     /// CollectionView 标题数量
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 4
@@ -333,12 +337,8 @@ extension TodoTableViewController: UICollectionViewDataSource {
         return cell
     }
     
-}
-
-
-// MARK: - UICollectionViewDelegate
-
-extension TodoTableViewController: UICollectionViewDelegate {
+    
+    // UICollectionViewDelegate
     
     /// 点击 Cell 跳转到 Todo 列表页
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -367,5 +367,4 @@ extension TodoTableViewController: UICollectionViewDelegate {
             break
         }
     }
-    
 }
