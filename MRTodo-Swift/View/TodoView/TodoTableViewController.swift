@@ -86,10 +86,13 @@ class TodoTableViewController: UITableViewController {
         layout.minimumLineSpacing = 20
         layout.minimumInteritemSpacing = 20
         layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
-        let todoFolderHeaderCollectionView = TodoFolderHeaderCollectionView(frame: CGRect(x: 0, y: 0, width: width, height: height), collectionViewLayout: layout)
-        todoFolderHeaderCollectionView.dataSource = self
-        todoFolderHeaderCollectionView.delegate = self
-        self.tableView.tableHeaderView = todoFolderHeaderCollectionView
+        
+        let collectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: width, height: height), collectionViewLayout: layout)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(TodoFolderHeaderCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        collectionView.backgroundColor = .systemGroupedBackground
+        self.tableView.tableHeaderView = collectionView
     }
     
     /// 设置新增待办按钮
@@ -307,4 +310,62 @@ class TodoTableViewController: UITableViewController {
     }
     */
 
+}
+
+
+// MARK: - UICollectionViewDataSource
+
+extension TodoTableViewController: UICollectionViewDataSource {
+    /// CollectionView 标题数量
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 4
+    }
+    
+    /// 设置 Cell
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! TodoFolderHeaderCollectionViewCell
+        
+        cell.backgroundColor = .cellBackground
+        cell.applyCornerRadius()
+        let i = indexPath.row
+        cell.configure(folderIcon: topEntries[i].icon, folderName: topEntries[i].name, itemNumber: topEntries[i].count)
+        
+        return cell
+    }
+    
+}
+
+
+// MARK: - UICollectionViewDelegate
+
+extension TodoTableViewController: UICollectionViewDelegate {
+    
+    /// 点击 Cell 跳转到 Todo 列表页
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 0:
+            let todoTableViewController = TodoItemTableViewController(style: .plain)
+            todoTableViewController.todoFilteringMode = .today
+            todoTableViewController.setTodoData(todoData: Todo.requestWithToday())
+            self.navigationController?.pushViewController(todoTableViewController, animated: true)
+        case 1:
+            let todoTableViewController = TodoItemTableViewController(style: .plain)
+            todoTableViewController.todoFilteringMode = .timeline
+            todoTableViewController.setTodoData(todoData: Todo.requestWithTimeline())
+            self.navigationController?.pushViewController(todoTableViewController, animated: true)
+        case 2:
+            let todoTableViewController = TodoItemTableViewController(style: .plain)
+            todoTableViewController.todoFilteringMode = .all
+            todoTableViewController.setTodoData(todoData: Todo.requestWithAllTodo())
+            self.navigationController?.pushViewController(todoTableViewController, animated: true)
+        case 3:
+            let todoTableViewController = TodoItemTableViewController(style: .plain)
+            todoTableViewController.todoFilteringMode = .flag
+            todoTableViewController.setTodoData(todoData: Todo.requestWithFlag())
+            self.navigationController?.pushViewController(todoTableViewController, animated: true)
+        default:
+            break
+        }
+    }
+    
 }
