@@ -87,12 +87,12 @@ class TodoTableViewController: UITableViewController {
         layout.minimumInteritemSpacing = 20
         layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
         
-        let collectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: width, height: height), collectionViewLayout: layout)
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.register(TodoFolderHeaderCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        collectionView.backgroundColor = .systemGroupedBackground
-        self.tableView.tableHeaderView = collectionView
+        let todoHeaderCollectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: width, height: height), collectionViewLayout: layout)
+        todoHeaderCollectionView.dataSource = self
+        todoHeaderCollectionView.delegate = self
+        todoHeaderCollectionView.register(TodoHeaderCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        todoHeaderCollectionView.backgroundColor = .systemGroupedBackground
+        self.tableView.tableHeaderView = todoHeaderCollectionView
     }
     
     /// 设置新增待办按钮
@@ -323,7 +323,7 @@ extension TodoTableViewController: UICollectionViewDataSource {
     
     /// 设置 Cell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! TodoFolderHeaderCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! TodoHeaderCollectionViewCell
         
         cell.backgroundColor = .cellBackground
         cell.applyCornerRadius()

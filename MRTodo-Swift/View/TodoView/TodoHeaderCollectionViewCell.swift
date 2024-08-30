@@ -1,5 +1,5 @@
 //
-//  TodoFolderHeaderCollectionViewCell.swift
+//  TodoHeaderCollectionViewCell.swift
 //  MRTodo-Swift
 //
 //  Created by 南墙先生 on 2024/8/10.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TodoFolderHeaderCollectionViewCell: UICollectionViewCell {
+class TodoHeaderCollectionViewCell: UICollectionViewCell {
     
     /// 文件夹 Icon
     private var folderIcon: FolderIcon = FolderIcon()
