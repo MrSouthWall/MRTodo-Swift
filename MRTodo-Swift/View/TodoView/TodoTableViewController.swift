@@ -29,6 +29,8 @@ class TodoTableViewController: UITableViewController {
     
     /// Todo 列表文件夹数据
     private var folderData: [Folder] = Folder.requestWithOrderId()
+    
+    private var todoHeaderCollectionView: UICollectionView?
     /// 置顶分类信息
     private var topEntries: [(icon: FolderIcon, name: String, count: String)] {
         return [
@@ -59,6 +61,14 @@ class TodoTableViewController: UITableViewController {
         setupTableView()
         // 设置右下角悬浮按钮
         setupAddNewTodoButton()
+        
+        // 监听 Core Data 保存的通知
+        NotificationCenter.default.addObserver(self, selector: #selector(contextDidSave(_:)), name: NSNotification.Name.NSManagedObjectContextObjectsDidChange, object: nil)
+    }
+    
+    @objc func contextDidSave(_ notification: Notification) {
+        // 当 Core Data 数据有更新时执行的函数
+        todoHeaderCollectionView?.reloadData()
     }
     
     /// 配置导航栏
@@ -80,11 +90,11 @@ class TodoTableViewController: UITableViewController {
         layout.minimumInteritemSpacing = 20
         layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
         
-        let todoHeaderCollectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: width, height: height), collectionViewLayout: layout)
-        todoHeaderCollectionView.dataSource = self
-        todoHeaderCollectionView.delegate = self
-        todoHeaderCollectionView.register(TodoHeaderCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        todoHeaderCollectionView.backgroundColor = .systemGroupedBackground
+        todoHeaderCollectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: width, height: height), collectionViewLayout: layout)
+        todoHeaderCollectionView?.dataSource = self
+        todoHeaderCollectionView?.delegate = self
+        todoHeaderCollectionView?.register(TodoHeaderCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        todoHeaderCollectionView?.backgroundColor = .systemGroupedBackground
         self.tableView.tableHeaderView = todoHeaderCollectionView
     }
     
