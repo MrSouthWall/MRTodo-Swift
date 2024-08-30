@@ -14,7 +14,7 @@ extension Todo {
         // 筛选今天的数据
         let context = MRCoreDataManager.shared.context
         let request = self.fetchRequest()
-        request.predicate = NSPredicate(format: "startTime == %@", Date.now as CVarArg)
+        request.predicate = NSPredicate(format: "startTime <= %@", Date.now as CVarArg)
         request.sortDescriptors = [NSSortDescriptor(key: "endTime", ascending: true), NSSortDescriptor(key: "startTime", ascending: true)]
         if let todoData = try? context.fetch(request) {
             return todoData
@@ -27,7 +27,16 @@ extension Todo {
     /// 获取时间线的 Todo 列表
     static func requestWithTimeline() -> [Todo] {
         // 筛选时间线的 Todo 数据
-        return []
+        let context = MRCoreDataManager.shared.context
+        let request = self.fetchRequest()
+        request.predicate = NSPredicate(format: "startTime != nil || endTime != nil")
+        request.sortDescriptors = [NSSortDescriptor(key: "endTime", ascending: true), NSSortDescriptor(key: "startTime", ascending: true)]
+        if let todoData = try? context.fetch(request) {
+            return todoData
+        } else {
+            print("从 CoreData 取出文件夹数据失败！")
+            return []
+        }
     }
     
     /// 获取所有的 Todo 列表
