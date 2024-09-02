@@ -142,6 +142,12 @@ class TodoItemTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
+    
+    /// 点击 Cell 跳转到 Todo 详情页
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let todoDetailViewController = TodoDetailViewController(todo: todoData[indexPath.row])
+        self.navigationController?.pushViewController(todoDetailViewController, animated: true)
+    }
 
     
     /*
