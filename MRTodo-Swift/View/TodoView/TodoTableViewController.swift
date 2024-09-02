@@ -372,4 +372,24 @@ extension TodoTableViewController: UICollectionViewDataSource, UICollectionViewD
             break
         }
     }
+    
+    /// 点击时执行
+    func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) {
+            UIView.animate(withDuration: 0.3) {
+                cell.backgroundColor = .lightGray
+                cell.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+            }
+        }
+    }
+    
+    /// 松开时执行
+    func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) {
+            UIView.animate(withDuration: 0.5) {
+                cell.backgroundColor = .cellBackground
+                cell.transform = CGAffineTransform(scaleX: 1, y: 1)
+            }
+        }
+    }
 }
