@@ -20,6 +20,9 @@ class TodoDetailViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
+        self.view.backgroundColor = .systemBackground
+        
         let todoDetail = UILabel()
         todoDetail.text = todo.description
         todoDetail.numberOfLines = 0
